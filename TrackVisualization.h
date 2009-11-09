@@ -189,10 +189,10 @@ void PlotTracksTemplate( vtkRenderer* ren1, TTrack& polyDataList,
 
   // Render the volume
 
-  ren1->ResetCamera();
-  renWin->Render();
+  //ren1->ResetCamera();
+  //renWin->Render();
 
-  iren->Start();
+  //iren->Start();
 
   renWin->Delete();
   iren->Delete();

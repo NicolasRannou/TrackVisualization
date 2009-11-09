@@ -202,12 +202,11 @@ int main( int argc, char *argv[] )
 
   QApplication app(argc, argv);
 
-  TrackWidget fenetre(NULL);
+  TrackWidget window(NULL);
 
-  fenetre.SetNumberOfArgs(argc);
-  fenetre.SetRenderWindow(ren1);
+  window.SetRenderWindow(ren1);
 
-  fenetre.show();
+  window.show();
 
   app.exec();
   

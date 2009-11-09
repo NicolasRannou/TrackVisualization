@@ -9,23 +9,11 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
   }
 
-void TrackWidget::SetNumberOfArgs(int numberOfArgs)
-  {
-  this->NumberOfArgs = numberOfArgs;
-  nombre1->setValue(this->NumberOfArgs);
-  }
-
 void TrackWidget::SetRenderWindow(vtkRenderer *renderWindow)
   {
   this->RenderWindow = renderWindow;
   
   visualizationBox-> GetRenderWindow()-> AddRenderer(this->RenderWindow);
-  }
-
-void TrackWidget::on_boutonEgal_clicked()
-  {
-    int somme = nombre1->value() + nombre2->value();
-    result->setNum(somme); 
   }
 
 void TrackWidget::on_lines_clicked()

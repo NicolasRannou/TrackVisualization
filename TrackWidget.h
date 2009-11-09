@@ -19,11 +19,9 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
 
     public:
         TrackWidget(QWidget *parent = 0);
-        void SetNumberOfArgs(int numberOfArgs);
         void SetRenderWindow (vtkRenderer *renderWindow);
 
     private slots:
-        void on_boutonEgal_clicked();
         void on_lines_clicked();
         void on_tubes_clicked();
         void on_tubes_toggled(bool on);
