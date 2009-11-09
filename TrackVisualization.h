@@ -53,26 +53,26 @@ void GlyphActor(vtkActor *glyphActor, vtkPoints *points, vtkFloatArray *colors,
     vtkLookupTable *LUT, GlyphShape *glyphShape, double *range);
 
 // Get the points in each spline
-template< class TTrack>
-void TrackSplines(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void TrackSplines(Lineage<TrackType> * polyDataList,
     vtkstd::vector<vtkPoints*> * pointsList, double *trackTimeRange);
 
 // Get the color of each point in each spline
-template< class TTrack>
-void TrackSplinesColors(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void TrackSplinesColors(Lineage<TrackType> * polyDataList,
     vtkstd::vector<vtkFloatArray*> * pointsColorList, double totalTimeRange,
     double *trackTimeRange);
 
 // Draw the nodes and the splines from the tree
-template< class TTrack, class TrackType,
+template<class TrackType,
   class GlyphShape >
-void PlotTracksTemplate( vtkRenderer* ren1, TTrack& polyDataList,
+void PlotTracksTemplate( vtkRenderer* ren1,
     Lineage<TrackType>* RootNode,GlyphShape * glyphShape, bool tubesON,
     double totalTimeRange, double *trackTimeRange, double glyphTime);
 
 // Get the point and the color of each node
-template< class TTrack>
-void pointsAndScalarsGlyph(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
     vtkPoints * pointsGlyph, vtkFloatArray *scalarsGlyph,double * counter,
     double totalTimeRange, double *trackTimeRange, double glyphTime);
 
@@ -82,9 +82,9 @@ void pointsAndScalarsGlyph(Lineage<TTrack> * polyDataList,
 //**************************************************************************//
 
 
-template< class TTrack, class TrackType,
+template< class TrackType,
   class GlyphShape >
-void PlotTracksTemplate( vtkRenderer* ren1, TTrack& polyDataList,
+void PlotTracksTemplate( vtkRenderer* ren1,
     Lineage<TrackType>* RootNode,GlyphShape * glyphShape, bool tubesON,
     double totalTimeRange, double *trackTimeRange, double glyphTime)
   {
@@ -199,14 +199,14 @@ void PlotTracksTemplate( vtkRenderer* ren1, TTrack& polyDataList,
 }
 
 //**************************************************************************//
-template< class TTrack>
-void TrackSplines(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void TrackSplines(Lineage<TrackType> * polyDataList,
     vtkstd::vector<vtkPoints*> * pointsList, double *trackTimeRange ) 
   {
 
   if (!polyDataList->IsLeaf())
     {
-    typename TTrack::iterator containerIterator;
+    typename TrackType::iterator containerIterator;
     containerIterator = polyDataList->GetTrack()[0].begin();
 
     if( (containerIterator->first >= trackTimeRange[0])
@@ -348,28 +348,28 @@ void TrackSplines(Lineage<TTrack> * polyDataList,
 
     if(polyDataList->GetDaughter1() != 0)
       {
-        TrackSplines<TTrack>(polyDataList->GetDaughter1(),
+        TrackSplines<TrackType>(polyDataList->GetDaughter1(),
            pointsList, trackTimeRange);
       }
 
     if(polyDataList->GetDaughter2() != 0)
       {
-        TrackSplines<TTrack>(polyDataList->GetDaughter2(),
+        TrackSplines<TrackType>(polyDataList->GetDaughter2(),
            pointsList, trackTimeRange);
       }
     }
   }
 
 //**************************************************************************//
-template< class TTrack>
-void TrackSplinesColors(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void TrackSplinesColors(Lineage<TrackType> * polyDataList,
     vtkstd::vector<vtkFloatArray*> * pointsColorList,
     double totalTimeRange, double *trackTimeRange)
   {
 
   if (!polyDataList->IsLeaf())
     {
-    typename TTrack::iterator containerIterator;
+    typename TrackType::iterator containerIterator;
     containerIterator = polyDataList->GetTrack()[0].begin();
 
     if( (containerIterator->first >= trackTimeRange[0])
@@ -467,14 +467,14 @@ void TrackSplinesColors(Lineage<TTrack> * polyDataList,
 
     if(polyDataList->GetDaughter1() != 0)
       {
-        TrackSplinesColors<TTrack>(
+        TrackSplinesColors<TrackType>(
             polyDataList->GetDaughter1(), pointsColorList,totalTimeRange,
             trackTimeRange);
       }
 
     if(polyDataList->GetDaughter2() != 0)
       {
-        TrackSplinesColors<TTrack>(
+        TrackSplinesColors<TrackType>(
             polyDataList->GetDaughter2(), pointsColorList, totalTimeRange,
             trackTimeRange);
       }
@@ -482,8 +482,8 @@ void TrackSplinesColors(Lineage<TTrack> * polyDataList,
   }
 
 //**************************************************************************//
-template< class TTrack>
-void pointsAndScalarsGlyph(Lineage<TTrack> * polyDataList,
+template< class TrackType>
+void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
     vtkPoints * pointsGlyph, vtkFloatArray *scalarsGlyph, double * counter,
     double totalTimeRange, double *trackTimeRange, double glyphTime)
   {
@@ -491,7 +491,7 @@ void pointsAndScalarsGlyph(Lineage<TTrack> * polyDataList,
   double *barycenter = new double[3];
   double x, y, z;
   //typedef typename TrackType::iterator TrackTypeIterator;
-  typename TTrack::iterator containerIterator;
+  typename TrackType::iterator containerIterator;
   containerIterator = polyDataList->GetTrack()[0].begin();
 
   //if( (containerIterator->first >= trackTimeRange[0])
@@ -512,13 +512,13 @@ void pointsAndScalarsGlyph(Lineage<TTrack> * polyDataList,
     {
     if(polyDataList->GetDaughter1() != 0)
       {
-      pointsAndScalarsGlyph<TTrack>(
+      pointsAndScalarsGlyph<TrackType>(
           polyDataList->GetDaughter1(), pointsGlyph, scalarsGlyph, counter,
           totalTimeRange, trackTimeRange, glyphTime);
       }
     if(polyDataList->GetDaughter2() != 0)
       {
-      pointsAndScalarsGlyph<TTrack>(
+      pointsAndScalarsGlyph<TrackType>(
          polyDataList->GetDaughter2(), pointsGlyph, scalarsGlyph, counter,
          totalTimeRange, trackTimeRange, glyphTime);
       }

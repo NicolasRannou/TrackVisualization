@@ -181,7 +181,7 @@ int main( int argc, char *argv[] )
   //Node3->SetDaughter1( Node8 );
   
   // Display the choosen glyph in the choosen trackTimeRange
-  PlotTracksTemplate<vtkstd::vector<vtkPolyData*>,TrackType, GlyphShape >(ren1,polyDataList, RootNode, glyphShape, tubesON,
+  PlotTracksTemplate<TrackType, GlyphShape >(ren1, RootNode, glyphShape, tubesON,
         totalTimeRange, trackTimeRange, glyphTime);
 
   // Delete everything
@@ -205,6 +205,8 @@ int main( int argc, char *argv[] )
   TrackWidget window(NULL);
 
   window.SetRenderWindow(ren1);
+
+ //add tree root
 
   window.show();
 
