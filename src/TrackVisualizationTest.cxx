@@ -118,7 +118,7 @@ int main( int argc, char *argv[] )
   // totalTimeRange : to be defined for a good color repartition
   // trackTimeRange : to display the tracks which contains points in the chosen time range
   // glyphTime      : to display the glyph at the chosen time
-  double totalTimeRange = 60;
+  double totalTimeRange = 120;
   double * trackTimeRange = new double[2];
   trackTimeRange[0] = 0;
   trackTimeRange[1] = 60;
@@ -158,7 +158,7 @@ int main( int argc, char *argv[] )
   polyDataIterator++;
   t6.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
   polyDataIterator++;
-  t7.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
+  t7.insert( vtkstd::make_pair( 100, *polyDataIterator ) );
   //polyDataIterator++;
   //t8.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
 
@@ -205,6 +205,10 @@ int main( int argc, char *argv[] )
   TrackWidget window(NULL);
 
   window.SetRenderWindow(ren1);
+  window.SetTotalTimeRange(totalTimeRange);
+  window.SetEndTime(totalTimeRange);
+  window.SetGlyphTime(totalTimeRange/2);
+  window.SetRootNode(RootNode);
 
  //add tree root
 
@@ -214,7 +218,7 @@ int main( int argc, char *argv[] )
   
   ren1->Delete();
 
-  return 1;
+  return 0;
   }
 
 

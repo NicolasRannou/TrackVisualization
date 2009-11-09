@@ -16,6 +16,29 @@ void TrackWidget::SetRenderWindow(vtkRenderer *renderWindow)
   visualizationBox-> GetRenderWindow()-> AddRenderer(this->RenderWindow);
   }
 
+void TrackWidget::SetTotalTimeRange(int value)
+  {
+  TotalTimeRange = value;
+  totalTimeRange->setValue(value);
+  }
+
+void TrackWidget::SetEndTime(int value)
+  {
+  End = value;
+  end->setValue(value);
+  }
+
+void TrackWidget::SetGlyphTime(int value)
+  {
+  GlyphTime = value;
+  glyphTime->setValue(value);
+  }
+
+void TrackWidget::SetRootNode(Lineage<TrackType> * root)
+  {
+  RootNode = root;
+  }
+
 void TrackWidget::on_lines_clicked()
   {
 
@@ -73,33 +96,26 @@ void TrackWidget::on_apply_clicked()
     printf("TotalTimeRange: %d \n", TotalTimeRange);
     printf("GlyphTime: %d \n", GlyphTime);
 
-  // Generate the polydatas
+    typedef vtkSphereSource GlyphShape;
+    vtkSphereSource *glyphShape = vtkSphereSource::New();
+    glyphShape->SetRadius(0.1);
+
+    double * trackTimeRange = new double[2];
+      trackTimeRange[0] = Begin;
+      trackTimeRange[1] = End;
+
+    //PlotTracksTemplate<TrackType, GlyphShape >(RenderWindow, RootNode, GlyphShape, linesON,
+    //		TotalTimeRange, trackTimeRange, GlyphTime);
   }
 
 void TrackWidget::on_begin_valueChanged(int value)
   {
-  
-  if(value >= End)
-    {
-    begin->setValue(value-1);
-    }
-  else
-    {
     Begin = value;
-    }
   }
 
 void TrackWidget::on_end_valueChanged(int value)
   {
-
-  if(value <= Begin)
-    {
-    end->setValue(value+1);
-    }
-  else
-    {
     End = value;
-    }
   }
 
 void TrackWidget::on_totalTimeRange_valueChanged(int value)
@@ -109,16 +125,5 @@ void TrackWidget::on_totalTimeRange_valueChanged(int value)
 
 void TrackWidget::on_glyphTime_valueChanged(int value)
   {
-  if(value > End)
-    {
-    glyphTime->setValue(value-1);
-    }
-  else if((value < Begin))
-    {
-    glyphTime->setValue(value+1);
-    }
-  else 
-    {
     GlyphTime = value;
-    }
   }

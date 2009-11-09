@@ -36,8 +36,6 @@
 #include "vtkSpline.h"
 #include "vtkCardinalSpline.h"
 
-using namespace std;
-
 
 //**************************************************************************//
 //                            FONCTIONS DECLARATION                         //
