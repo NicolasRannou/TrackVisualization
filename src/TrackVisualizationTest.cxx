@@ -78,10 +78,10 @@ const char* getFileExtension(const string& file);
 int main( int argc, char *argv[] )
   {
 
-  if (argc < 2) {
+  /*if (argc < 2) {
         fprintf (stderr, "Usage: %s /path_To_VTK_Files \n", argv[0]);
         return 1;
-    }
+    }*/
 
   // Define variables
   static char **files = NULL;
@@ -99,17 +99,17 @@ int main( int argc, char *argv[] )
   }
 
   // Get the files which are in the folder "argv[1]"
-  files = GetAllFiles (argv[1]);
+  files = GetAllFiles ("/home/nicolas/PolyDatas/");
 
   // Load all the polyDatas.vtk files and store it in a vtkstd::vector
   vtkstd::vector<vtkPolyData*>        polyDataList;
-  int numberOfFiles = NumberOfFiles(argv[1]);
+  int numberOfFiles = NumberOfFiles("/home/nicolas/PolyDatas/");
 
   for(int i=0; i<numberOfFiles; i++)
     {
     if(strcmp(getFileExtension(files[i]),".vtk") == 0)
       {
-      polyDataList.push_back(loadPolyData(i,argv[1],files[i]));
+      polyDataList.push_back(loadPolyData(i,(char*)"/home/nicolas/PolyDatas/",files[i]));
       }
     }
   
