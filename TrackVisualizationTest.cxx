@@ -33,6 +33,12 @@
 #include "Lineage.h"
 #include "TrackVisualization.h"
 
+//QT
+
+#include <QApplication>
+#include <QtGui>
+#include "TrackWidget.h"
+
 using namespace std;
 
 
@@ -190,9 +196,24 @@ int main( int argc, char *argv[] )
     (*polyDataIterator)->Delete();
     }
 
+  
+
+  //fprintf (stderr, "Number of args: %d\n", argc);
+
+  QApplication app(argc, argv);
+
+  TrackWidget fenetre(NULL);
+
+  fenetre.SetNumberOfArgs(argc);
+  fenetre.SetRenderWindow(ren1);
+
+  fenetre.show();
+
+  app.exec();
+  
   ren1->Delete();
 
-  return 0;
+  return 1;
   }
 
 
