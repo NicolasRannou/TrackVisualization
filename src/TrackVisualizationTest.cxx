@@ -1,23 +1,22 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataReader.h"
-#include "vtkPolyDataMapper.h"
-#include "vtkActor.h"
+//#include "vtkPolyDataMapper.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkProperty.h"
 #include "vtkCamera.h"
 
-#include "vtkPolyDataWriter.h"
+/*#include "vtkPolyDataWriter.h"
 #include "vtkTransform.h"
 #include "vtkTransformPolyDataFilter.h"
-
+*/
 #include "vtkPoints.h"
 
 #include "vtkSphereSource.h"
-#include "vtkCubeSource.h"
+//#include "vtkCubeSource.h"
 
-#include "vtkGlyph3D.h"
+//#include "vtkGlyph3D.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -58,14 +57,11 @@ using namespace std;
 // in the target folder
 char **GetAllFiles (const char *path);
 
-// Returns the number of files contained in the target folder
+// Returns the number of files contained in the target foldervtkRenderer *testtt;
 int NumberOfFiles (const char *path);
 
 // Returns the polyData contained in the target folder
 vtkPolyData * loadPolyData(int i,char * path,char * fileName);
-
-// Returns the barycenter of the target polyData
-double * GetBarycenter(vtkPolyData* polyData);
 
 // Get the extension of the target file
 const char* getFileExtension(const string& file);
@@ -135,7 +131,7 @@ int main( int argc, char *argv[] )
   typedef vtkSphereSource GlyphShape;
   vtkSphereSource *glyphShape = vtkSphereSource::New();
   glyphShape->SetRadius(0.1);
-  
+
 
   // Tree creation with a map <polydata,time>
   typedef vtkstd::map<double, vtkPolyData*> TrackType;
@@ -215,7 +211,7 @@ int main( int argc, char *argv[] )
   window.show();
 
   app.exec();
-  
+
   ren1->Delete();
 
   return 0;

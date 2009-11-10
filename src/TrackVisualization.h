@@ -3,9 +3,6 @@
 
 #include "vtkPoints.h"
 
-#include "vtkSphereSource.h"
-#include "vtkCubeSource.h"
-
 #include "vtkLineSource.h"
 #include "vtkCellArray.h"
 #include "vtkTubeFilter.h"
@@ -13,14 +10,18 @@
 
 #include "vtkMath.h"
 
+#include "vtkPolyDataMapper.h"
+#include "vtkActor.h"
+#include "vtkRenderer.h"
+#include "vtkRenderWindow.h"
+#include "vtkRenderWindowInteractor.h"
+
 #include "vtkGlyph3D.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <dirent.h>
-#include <iostream>
 
-#include <string.h>
 #include <vtkstd/vector>
 #include <vtkstd/map>
 #include <iostream>
@@ -41,8 +42,13 @@
 //                            FONCTIONS DECLARATION                         //
 //**************************************************************************//
 
+// Returns the barycenter of the target polyData
+template< class TEST>
+double * GetBarycenter(TEST* polyData);
+
 // Create an actor for each spline
-void SplineActor(vtkActor *splineActor, vtkPoints *points,
+template< class TOTO>
+void SplineActor(TOTO *splineActor, vtkPoints *points,
     vtkFloatArray *colors, vtkLookupTable *LUT, bool tubesON);
 
 // Create the glyph actor
@@ -148,7 +154,7 @@ void PlotTracksTemplate( vtkRenderer* ren1,
     {
     vtkActor * splineActor = vtkActor::New();
 
-    SplineActor(splineActor, *pointsIterator, *pointsColorIterator, LUT,
+    SplineActor<vtkActor>(splineActor, *pointsIterator, *pointsColorIterator, LUT,
         tubesON);
 
     ren1->AddActor(splineActor);
@@ -226,7 +232,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
             && (polyDataList->GetDaughter2()->GetTrack()[0].begin()->first
               <= trackTimeRange[1]))
           {
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -235,7 +241,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
           containerIterator
             = polyDataList->GetDaughter1()->GetTrack()[0].begin();
 
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -244,7 +250,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
           containerIterator
             = polyDataList->GetDaughter2()->GetTrack()[0].begin();
 
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -269,7 +275,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
           }
         else
           {
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -278,7 +284,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
           containerIterator
             = polyDataList->GetDaughter1()->GetTrack()[0].begin();
 
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -312,7 +318,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
           double *barycenter = new double[3];
           double x,y,z;
 
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -320,7 +326,7 @@ void TrackSplines(Lineage<TrackType> * polyDataList,
 
           containerIterator
             = polyDataList->GetDaughter2()->GetTrack()[0].begin();
-          barycenter = GetBarycenter(containerIterator->second);
+          barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
           x = barycenter[0];
           y = barycenter[1];
           z = barycenter[2];
@@ -496,7 +502,7 @@ void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
   //&& (containerIterator->first <= trackTimeRange[1]))
   if( containerIterator->first == glyphTime)
     {
-    barycenter = GetBarycenter(containerIterator->second);
+    barycenter = GetBarycenter<vtkPolyData>(containerIterator->second);
     x = barycenter[0];
     y = barycenter[1];
     z = barycenter[2];
@@ -524,7 +530,8 @@ void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
   }
 
 //**************************************************************************//
-double * GetBarycenter(vtkPolyData* polyData)
+template< class TEST>
+double * GetBarycenter(TEST* polyData)
   {
 
   double *centerOfGravity = new double[3];
@@ -581,7 +588,8 @@ void GlyphActor(vtkActor *glyphActor, vtkPoints *points, vtkFloatArray *colors,
   }
 
 //**************************************************************************//
-void SplineActor(vtkActor *splineActor, vtkPoints *points,
+template< class TOTO>
+void SplineActor(TOTO *splineActor, vtkPoints *points,
     vtkFloatArray *colors, vtkLookupTable *LUT, bool tubesON)
   {
 

@@ -96,7 +96,7 @@ void TrackWidget::on_apply_clicked()
     printf("TotalTimeRange: %d \n", TotalTimeRange);
     printf("GlyphTime: %d \n", GlyphTime);
 
-    typedef vtkSphereSource GlyphShape;
+    //typedef vtkSphereSource GlyphShape;
     vtkSphereSource *glyphShape = vtkSphereSource::New();
     glyphShape->SetRadius(0.1);
 
@@ -104,8 +104,10 @@ void TrackWidget::on_apply_clicked()
       trackTimeRange[0] = Begin;
       trackTimeRange[1] = End;
 
-    //PlotTracksTemplate<TrackType, GlyphShape >(RenderWindow, RootNode, GlyphShape, linesON,
-    //		TotalTimeRange, trackTimeRange, GlyphTime);
+    //PlotTracksTemplate<TrackType, vtkSphereSource >(RenderWindow, RootNode, glyphShape, linesON,
+    //	TotalTimeRange, trackTimeRange, GlyphTime);
+
+    glyphShape->Delete();
   }
 
 void TrackWidget::on_begin_valueChanged(int value)

@@ -11,7 +11,7 @@
 
 #include "vtkSphereSource.h"
 
-//#include "TrackVisualization.h"
+#include "TrackVisualization.h"
 
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
