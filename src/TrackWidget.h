@@ -18,6 +18,9 @@
 
 #include "TrackVisualization.h"
 
+#include "vtkWindowToImageFilter.h"
+#include "vtkMPEG2Writer.h"
+
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
@@ -45,6 +48,8 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         int Shape;
         //const char* ShapeChar;
         Lineage<TrackType>* RootNode;
+        vtkMPEG2Writer* MpegWriter;
+        vtkWindowToImageFilter* W2if;
 
     private slots:
         void on_lines_clicked();
@@ -54,6 +59,9 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_glyphShape_activated ( int index );
         //void on_glyphShape_activated (const QString& shapeChar);
         void on_apply_clicked();
+        void on_startVideo_clicked();
+        void on_endVideo_clicked();
+        void on_visualizationBox_mouseEvent(QMouseEvent *event);
         void on_begin_valueChanged(int value);
 	void on_end_valueChanged(int value);
 	void on_totalTimeRange_valueChanged(int value);

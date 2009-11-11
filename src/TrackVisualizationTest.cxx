@@ -26,6 +26,11 @@
 #include <QtGui>
 #include "TrackWidget.h"
 
+//video
+#include <vtkGenericMovieWriter.h>
+#include <vtkMPEG2Writer.h>
+#include <vtkWindowToImageFilter.h>
+
 using namespace std;
 
 
@@ -109,14 +114,6 @@ int main( int argc, char *argv[] )
   trackTimeRange[0] = 0;
   trackTimeRange[1] = 60;
   double glyphTime = 30;
-  
-  // To choose the shape of the glyph
-  
-  //typedef vtkCubeSource GlyphShape;
-  //vtkCubeSource *glyphShape = vtkCubeSource::New();
-  //glyphShape->SetXLength(0.2);
-  //glyphShape->SetYLength(0.2);
-  //glyphShape->SetZLength(0.2);
 
   // Tree creation with a map <polydata,time>
   typedef vtkstd::map<double, vtkPolyData*> TrackType;
@@ -169,6 +166,15 @@ int main( int argc, char *argv[] )
   QApplication app(argc, argv);
 
   TrackWidget window(NULL);
+/*
+  vtkWindowToImageFilter* w2if = vtkWindowToImageFilter::New();
+  w2if->SetInput(renWin);
+
+  vtkMPEG2Writer* mpegWriter = vtkMPEG2Writer::New();
+  mpegWriter->SetFileName("part2-1.mpg");
+  mpegWriter->SetInputConnection(w2if->GetOutputPort());
+  mpegWriter->Start();
+  mpegWriter->End();*/
 
 
   //window.SetRenderWindow(renWin);

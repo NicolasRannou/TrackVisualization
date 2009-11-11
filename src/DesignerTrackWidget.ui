@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>703</width>
-    <height>468</height>
+    <width>1082</width>
+    <height>613</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,16 +18,16 @@
     <rect>
      <x>50</x>
      <y>30</y>
-     <width>351</width>
-     <height>301</height>
+     <width>771</width>
+     <height>551</height>
     </rect>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>450</x>
-     <y>30</y>
+     <x>880</x>
+     <y>20</y>
      <width>171</width>
      <height>421</height>
     </rect>
@@ -67,8 +67,6 @@
         </item>
        </layout>
       </widget>
-      <zorder>layoutWidget</zorder>
-      <zorder>label</zorder>
      </widget>
     </item>
     <item>
@@ -224,9 +222,46 @@
     </item>
    </layout>
   </widget>
-  <zorder>visualizationBox</zorder>
-  <zorder>layoutWidget</zorder>
-  <zorder>tubes</zorder>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>890</x>
+     <y>460</y>
+     <width>156</width>
+     <height>120</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_3">
+    <item row="0" column="0">
+     <widget class="QLabel" name="videoNameLabel">
+      <property name="text">
+       <string>Name of the video</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLineEdit" name="videoName"/>
+    </item>
+    <item row="2" column="0">
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="0">
+       <widget class="QPushButton" name="endVideo">
+        <property name="text">
+         <string>End a video capture</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0">
+       <widget class="QPushButton" name="startVideo">
+        <property name="text">
+         <string>Start a video capture</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
  </widget>
  <customwidgets>
   <customwidget>

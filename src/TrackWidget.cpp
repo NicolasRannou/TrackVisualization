@@ -7,6 +7,8 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     linesON = true;
     tubesON = false;
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
+    MpegWriter = vtkMPEG2Writer::New();
+    W2if = vtkWindowToImageFilter::New();
   }
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
@@ -95,33 +97,28 @@ void TrackWidget::on_glyphShape_activated ( int index )
 
 void TrackWidget::on_apply_clicked()
   {
-  // Check if the parameters are the good ones
-  /*if(linesON)
-    {
-    printf("Lines ON \n");
-    }
-  else
-    {
-    printf("Tubes ON \n");
-    }
-*/
-  if(tubesON)
-      {
-      printf("Tubes ON \n");
-      }
-    else
-      {
-      printf("Lines ON \n");
-      }
-
-    
-    printf("Shape: %d \n", Shape);
-    printf("Begin: %d \n", Begin);
-    printf("End: %d \n", End);
-    printf("TotalTimeRange: %d \n", TotalTimeRange);
-    printf("GlyphTime: %d \n", GlyphTime);
-
     updateRenderingWindow();
+  }
+
+void TrackWidget::on_startVideo_clicked()
+  {
+  W2if->SetInput(visualizationBox->GetRenderWindow());
+
+  MpegWriter->SetFileName("test.mpg");
+  MpegWriter->SetInput(W2if->GetOutput());
+  MpegWriter->Start();
+  }
+
+void TrackWidget::on_endVideo_clicked()
+  {
+  MpegWriter->End();
+  }
+
+void TrackWidget::on_visualizationBox_mouseEvent(QMouseEvent *event)
+  {
+  visualizationBox->GetRenderWindow()->Render();
+  W2if->Modified();
+  MpegWriter->Write();
   }
 
 void TrackWidget::on_begin_valueChanged(int value)
@@ -227,5 +224,4 @@ void TrackWidget::updateRenderingWindow()
 
   Renderer->ResetCamera();
   visualizationBox->update();
-
   }
