@@ -84,6 +84,8 @@ int main( int argc, char *argv[] )
 
   // Create the rendering window
   vtkRenderer *ren1 = vtkRenderer::New();
+  vtkRenderWindow *renWin = vtkRenderWindow::New();
+  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
 
   bool tubesON = false;
   if(argc >= 3)
@@ -176,10 +178,31 @@ int main( int argc, char *argv[] )
   Node3->SetDaughter2( Node7 );
   //Node3->SetDaughter1( Node8 );
   
-  // Display the choosen glyph in the choosen trackTimeRange
-  PlotTracksTemplate<TrackType, GlyphShape >(ren1, RootNode, glyphShape, tubesON,
-        totalTimeRange, trackTimeRange, glyphTime);
+  // Create the rendering window
+  renWin->AddRenderer(ren1);
+  iren->SetRenderWindow(renWin);
 
+
+  QApplication app(argc, argv);
+
+  TrackWidget window(NULL);
+
+
+  //window.SetRenderWindow(renWin);
+  //window.SetRenderWindowInteractor(iren);
+  window.SetRenderer(ren1);
+  window.SetTotalTimeRange(totalTimeRange);
+  window.SetEndTime(totalTimeRange);
+  window.SetGlyphTime(totalTimeRange/2);
+  window.SetRootNode(RootNode);
+
+ //add tree root
+
+  window.show();
+
+  app.exec();
+
+  glyphShape->Delete();
   // Delete everything
   delete files;
   delete trackTimeRange;
@@ -192,27 +215,9 @@ int main( int argc, char *argv[] )
     (*polyDataIterator)->Delete();
     }
 
-  
-
-  //fprintf (stderr, "Number of args: %d\n", argc);
-
-  QApplication app(argc, argv);
-
-  TrackWidget window(NULL);
-
-  window.SetRenderWindow(ren1);
-  window.SetTotalTimeRange(totalTimeRange);
-  window.SetEndTime(totalTimeRange);
-  window.SetGlyphTime(totalTimeRange/2);
-  window.SetRootNode(RootNode);
-
- //add tree root
-
-  window.show();
-
-  app.exec();
-
   ren1->Delete();
+  renWin->Delete();
+  iren->Delete();
 
   return 0;
   }

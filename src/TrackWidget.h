@@ -10,6 +10,7 @@
 #include "Lineage.h"
 
 #include "vtkSphereSource.h"
+#include "vtkRendererCollection.h"
 
 #include "TrackVisualization.h"
 
@@ -23,14 +24,18 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         typedef vtkstd::map<double, vtkPolyData*> TrackType;
 
         TrackWidget(QWidget *parent = 0);
-        void SetRenderWindow (vtkRenderer *renderWindow);
+        void SetRenderer (vtkRenderer *renderer);
+        void SetRenderWindow (vtkRenderWindow *renderWindow);
+        void SetRenderWindowInteractor (vtkRenderWindowInteractor *renderWindowInteractor);
         void SetTotalTimeRange(int value);
         void SetEndTime(int value);
         void SetGlyphTime(int value);
         void SetRootNode(Lineage<TrackType> * root);
 
     private:
-        vtkRenderer *RenderWindow;
+        vtkRenderer *Renderer;
+        vtkRenderWindow *RenderWindow;
+        vtkRenderWindowInteractor *RenderWindowInteractor;
         bool tubesON, linesON;
         int Begin, End, TotalTimeRange, GlyphTime;
         int Shape;

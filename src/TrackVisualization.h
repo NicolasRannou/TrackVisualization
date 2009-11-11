@@ -16,6 +16,8 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 
+#include "vtkActorCollection.h"
+
 #include "vtkGlyph3D.h"
 
 #include <stdio.h>
@@ -88,16 +90,18 @@ void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
 
 template< class TrackType,
   class GlyphShape >
-void PlotTracksTemplate( vtkRenderer* ren1,
+void PlotTracksTemplate( vtkRenderWindow *renWin,vtkRenderWindowInteractor *iren, vtkRenderer* ren1,
     Lineage<TrackType>* RootNode,GlyphShape * glyphShape, bool tubesON,
     double totalTimeRange, double *trackTimeRange, double glyphTime)
   {
 
-  // Create the rendering window
-  vtkRenderWindow *renWin = vtkRenderWindow::New();
-  renWin->AddRenderer(ren1);
-  vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
-  iren->SetRenderWindow(renWin);
+  //Remove actors if some exist
+	while(ren1->VisibleActorCount() != 0)
+	{
+    ren1->RemoveActor(ren1->GetActors()->GetLastActor());
+	}
+
+	printf("NumberOfActors: %d \n", ren1->VisibleActorCount());
 
   // Store barycenters position and colors in *vtkPoints
   // and *vtkFloatArray
@@ -160,7 +164,6 @@ void PlotTracksTemplate( vtkRenderer* ren1,
     ren1->AddActor(splineActor);
 
     splineActor->Delete();
-
     // Increment color iterator
     ++pointsColorIterator;
     }
@@ -169,7 +172,7 @@ void PlotTracksTemplate( vtkRenderer* ren1,
 
     pointsGlyph->Delete();
     scalarsGlyph->Delete();
-    glyphShape->Delete();
+    //glyphShape->Delete();
     glyphActor->Delete();
 
    for(vtkstd::vector<vtkPoints*>::iterator
@@ -198,8 +201,9 @@ void PlotTracksTemplate( vtkRenderer* ren1,
 
   //iren->Start();
 
-  renWin->Delete();
-  iren->Delete();
+  //renWin->Delete();
+  //iren->Delete();
+
 }
 
 //**************************************************************************//
@@ -568,6 +572,7 @@ void GlyphActor(vtkActor *glyphActor, vtkPoints *points, vtkFloatArray *colors,
 
   vtkGlyph3D *barycentersGlyph = vtkGlyph3D::New();
   barycentersGlyph->SetInput(barycenterPolydata);
+
   barycentersGlyph->SetSource(glyphShape->GetOutput());
   barycentersGlyph->SetVectorModeToUseNormal();
   barycentersGlyph->SetScaleModeToScaleByVector();

@@ -9,11 +9,30 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
   }
 
-void TrackWidget::SetRenderWindow(vtkRenderer *renderWindow)
+void TrackWidget::SetRenderer(vtkRenderer *renderer)
+  {
+  this->Renderer = renderer;
+  
+  this->visualizationBox-> GetRenderWindow()-> AddRenderer(this->Renderer);
+
+  //this->RenderWindow->AddRenderer(this->Renderer);
+  //this->RenderWindowInteractor->SetRenderWindow(this->RenderWindow);
+  }
+
+void TrackWidget::SetRenderWindow (vtkRenderWindow *renderWindow)
   {
   this->RenderWindow = renderWindow;
-  
-  visualizationBox-> GetRenderWindow()-> AddRenderer(this->RenderWindow);
+
+  this->visualizationBox->SetRenderWindow(this->RenderWindow);
+  //this->visualizationBox->GetRenderWindow()->Render();
+  //this->visualizationBox->update();
+  }
+
+void TrackWidget::SetRenderWindowInteractor (vtkRenderWindowInteractor *renderWindowInteractor)
+  {
+  this->RenderWindowInteractor = renderWindowInteractor;
+
+  this->visualizationBox-> GetRenderWindow()->SetInteractor(this->RenderWindowInteractor);
   }
 
 void TrackWidget::SetTotalTimeRange(int value)
@@ -104,8 +123,11 @@ void TrackWidget::on_apply_clicked()
       trackTimeRange[0] = Begin;
       trackTimeRange[1] = End;
 
-    //PlotTracksTemplate<TrackType, vtkSphereSource >(RenderWindow, RootNode, glyphShape, linesON,
-    //	TotalTimeRange, trackTimeRange, GlyphTime);
+    PlotTracksTemplate<TrackType, vtkSphereSource >(this->RenderWindow, this->RenderWindowInteractor, this->Renderer, RootNode, glyphShape, linesON,
+    	TotalTimeRange, trackTimeRange, GlyphTime);
+
+    this->Renderer->ResetCamera();
+    this->visualizationBox->update();
 
     glyphShape->Delete();
   }
