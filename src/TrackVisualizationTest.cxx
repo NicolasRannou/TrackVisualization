@@ -1,22 +1,15 @@
 #include "vtkPolyData.h"
 #include "vtkPolyDataReader.h"
-//#include "vtkPolyDataMapper.h"
+
 #include "vtkRenderer.h"
 #include "vtkRenderWindow.h"
 #include "vtkRenderWindowInteractor.h"
 #include "vtkProperty.h"
 #include "vtkCamera.h"
 
-/*#include "vtkPolyDataWriter.h"
-#include "vtkTransform.h"
-#include "vtkTransformPolyDataFilter.h"
-*/
 #include "vtkPoints.h"
 
 #include "vtkSphereSource.h"
-//#include "vtkCubeSource.h"
-
-//#include "vtkGlyph3D.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,14 +19,9 @@
 #include <string.h>
 #include <vtkstd/vector>
 #include <vtkstd/map>
-#include <iostream>
 #include <string>
 
-#include "Lineage.h"
-#include "TrackVisualization.h"
-
 //QT
-
 #include <QApplication>
 #include <QtGui>
 #include "TrackWidget.h"
@@ -130,11 +118,6 @@ int main( int argc, char *argv[] )
   //glyphShape->SetYLength(0.2);
   //glyphShape->SetZLength(0.2);
 
-  typedef vtkSphereSource GlyphShape;
-  vtkSphereSource *glyphShape = vtkSphereSource::New();
-  glyphShape->SetRadius(0.1);
-
-
   // Tree creation with a map <polydata,time>
   typedef vtkstd::map<double, vtkPolyData*> TrackType;
   TrackType t0, t1, t2, t3, t4, t5, t6, t7, t8;
@@ -202,7 +185,6 @@ int main( int argc, char *argv[] )
 
   app.exec();
 
-  glyphShape->Delete();
   // Delete everything
   delete files;
   delete trackTimeRange;

@@ -10,6 +10,10 @@
 #include "Lineage.h"
 
 #include "vtkSphereSource.h"
+#include "vtkCubeSource.h"
+
+#include <string.h>
+
 #include "vtkRendererCollection.h"
 
 #include "TrackVisualization.h"
@@ -39,6 +43,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         bool tubesON, linesON;
         int Begin, End, TotalTimeRange, GlyphTime;
         int Shape;
+        //const char* ShapeChar;
         Lineage<TrackType>* RootNode;
 
     private slots:
@@ -47,11 +52,17 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_tubes_toggled(bool on);
         void on_lines_toggled(bool on);
         void on_glyphShape_activated ( int index );
+        //void on_glyphShape_activated (const QString& shapeChar);
         void on_apply_clicked();
         void on_begin_valueChanged(int value);
-	    void on_end_valueChanged(int value);
-	    void on_totalTimeRange_valueChanged(int value);
-	    void on_glyphTime_valueChanged(int value);
+	void on_end_valueChanged(int value);
+	void on_totalTimeRange_valueChanged(int value);
+	void on_glyphTime_valueChanged(int value);
+	void on_glyphTimeSlider_valueChanged(int value);
+	//void on_glyphTimeSlider_sliderMoved(int value);
+	//void on_timeRangeSlider_sliderMoved(int value);
+
+	void updateRenderingWindow();
 };
 
 

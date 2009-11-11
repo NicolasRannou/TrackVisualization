@@ -11,9 +11,9 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
   {
-  this->Renderer = renderer;
+  Renderer = renderer;
   
-  this->visualizationBox-> GetRenderWindow()-> AddRenderer(this->Renderer);
+  visualizationBox-> GetRenderWindow()-> AddRenderer(this->Renderer);
 
   //this->RenderWindow->AddRenderer(this->Renderer);
   //this->RenderWindowInteractor->SetRenderWindow(this->RenderWindow);
@@ -21,9 +21,9 @@ void TrackWidget::SetRenderer(vtkRenderer *renderer)
 
 void TrackWidget::SetRenderWindow (vtkRenderWindow *renderWindow)
   {
-  this->RenderWindow = renderWindow;
+  RenderWindow = renderWindow;
 
-  this->visualizationBox->SetRenderWindow(this->RenderWindow);
+  visualizationBox->SetRenderWindow(this->RenderWindow);
   //this->visualizationBox->GetRenderWindow()->Render();
   //this->visualizationBox->update();
   }
@@ -72,14 +72,7 @@ void TrackWidget::on_tubes_clicked()
 void TrackWidget::on_tubes_toggled(bool on)
   {
   tubesON = on;
-  if(tubesON)
-  { 
-  //printf("tubesON  ");
-  }
-  else
-  {
-  //printf("tubesOFF  ");
-  }
+  //updateRenderingWindow();
 
   }
 
@@ -90,16 +83,20 @@ void TrackWidget::on_lines_toggled(bool on)
 
 void TrackWidget::on_glyphShape_activated ( int index )
   {
-
   Shape = index;
-  // 0 is sphere, 1 is cube
-  //printf("%d",index);
   }
+
+/*void TrackWidget::on_glyphShape_activated ( const QString& shapeChar)
+  {
+    QByteArray convert = shapeChar.toLatin1();
+    ShapeChar = convert.data();
+    printf("test: %s", ShapeChar);
+  }*/
 
 void TrackWidget::on_apply_clicked()
   {
   // Check if the parameters are the good ones
-  if(linesON)
+  /*if(linesON)
     {
     printf("Lines ON \n");
     }
@@ -107,6 +104,15 @@ void TrackWidget::on_apply_clicked()
     {
     printf("Tubes ON \n");
     }
+*/
+  if(tubesON)
+      {
+      printf("Tubes ON \n");
+      }
+    else
+      {
+      printf("Lines ON \n");
+      }
 
     
     printf("Shape: %d \n", Shape);
@@ -115,39 +121,111 @@ void TrackWidget::on_apply_clicked()
     printf("TotalTimeRange: %d \n", TotalTimeRange);
     printf("GlyphTime: %d \n", GlyphTime);
 
-    //typedef vtkSphereSource GlyphShape;
-    vtkSphereSource *glyphShape = vtkSphereSource::New();
-    glyphShape->SetRadius(0.1);
-
-    double * trackTimeRange = new double[2];
-      trackTimeRange[0] = Begin;
-      trackTimeRange[1] = End;
-
-    PlotTracksTemplate<TrackType, vtkSphereSource >(this->RenderWindow, this->RenderWindowInteractor, this->Renderer, RootNode, glyphShape, linesON,
-    	TotalTimeRange, trackTimeRange, GlyphTime);
-
-    this->Renderer->ResetCamera();
-    this->visualizationBox->update();
-
-    glyphShape->Delete();
+    updateRenderingWindow();
   }
 
 void TrackWidget::on_begin_valueChanged(int value)
   {
     Begin = value;
+    //updateRenderingWindow();
   }
 
 void TrackWidget::on_end_valueChanged(int value)
   {
     End = value;
+    //updateRenderingWindow();
   }
 
 void TrackWidget::on_totalTimeRange_valueChanged(int value)
   {
   TotalTimeRange = value;
+  glyphTimeSlider->setMaxValue(value);
+  //updateRenderingWindow();
   }
 
 void TrackWidget::on_glyphTime_valueChanged(int value)
   {
     GlyphTime = value;
+    //updateRenderingWindow();
+  }
+
+void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
+  {
+    GlyphTime = value;
+    //updateRenderingWindow();
+  }
+
+/*
+void TrackWidget::on_glyphTimeSlider_sliderMoved(int value)
+  {
+    //GlyphTime = value;
+    updateRenderingWindow();
+  }
+
+void TrackWidget::on_timeRangeSlider_sliderMoved(int value)
+  {
+    //GlyphTime = value;
+    updateRenderingWindow();
+  }
+*/
+
+void TrackWidget::updateRenderingWindow()
+  {
+
+  double * trackTimeRange = new double[2];
+  trackTimeRange[0] = Begin;
+  trackTimeRange[1] = End;
+
+/*//doesn't work crossed initialisation
+  switch (ShapeInt)
+      {
+      case 0:
+  	vtkSphereSource *sphereShape = vtkSphereSource::New();
+  	sphereShape->SetRadius(0.1);
+
+  	PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, linesON,
+  	  TotalTimeRange, trackTimeRange, GlyphTime);
+  	sphereShape->Delete();
+  	break;
+
+      case 1:
+  	vtkCubeSource *cubeShape = vtkCubeSource::New();
+  	cubeShape->SetXLength(0.2);
+  	cubeShape->SetYLength(0.2);
+  	cubeShape->SetZLength(0.2);
+
+  	PlotTracksTemplate<TrackType, vtkCubeSource >(Renderer, RootNode, cubeShape, linesON,
+  	  TotalTimeRange, trackTimeRange, GlyphTime);
+  	cubeShape->Delete();
+  	break;
+
+      default:
+	  break;
+      }*/
+
+    if(Shape == 0)
+      {
+      vtkSphereSource *sphereShape = vtkSphereSource::New();
+      sphereShape->SetRadius(0.1);
+
+      PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, tubesON,
+        TotalTimeRange, trackTimeRange, GlyphTime);
+      sphereShape->Delete();
+      }
+
+    if(Shape == 1)
+      {
+      vtkCubeSource *cubeShape = vtkCubeSource::New();
+      cubeShape->SetXLength(0.2);
+      cubeShape->SetYLength(0.2);
+      cubeShape->SetZLength(0.2);
+
+      PlotTracksTemplate<TrackType, vtkCubeSource >(Renderer, RootNode, cubeShape, tubesON,
+        TotalTimeRange, trackTimeRange, GlyphTime);
+      cubeShape->Delete();
+      }
+
+  Renderer->ResetCamera();
+  visualizationBox->update();
+
   }

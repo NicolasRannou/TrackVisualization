@@ -6,12 +6,12 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>664</width>
-    <height>359</height>
+    <width>703</width>
+    <height>468</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>TrackVisuWidget</string>
   </property>
   <widget class="QVTKWidget" name="visualizationBox" native="true">
    <property name="geometry">
@@ -23,13 +23,13 @@
     </rect>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>20</y>
-     <width>191</width>
-     <height>321</height>
+     <x>450</x>
+     <y>30</y>
+     <width>171</width>
+     <height>421</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -38,12 +38,12 @@
       <property name="title">
        <string>GroupBox</string>
       </property>
-      <widget class="QWidget" name="">
+      <widget class="QWidget" name="layoutWidget">
        <property name="geometry">
         <rect>
          <x>20</x>
          <y>20</y>
-         <width>121</width>
+         <width>66</width>
          <height>54</height>
         </rect>
        </property>
@@ -67,6 +67,8 @@
         </item>
        </layout>
       </widget>
+      <zorder>layoutWidget</zorder>
+      <zorder>label</zorder>
      </widget>
     </item>
     <item>
@@ -85,9 +87,31 @@
           <property name="maximum">
            <number>999</number>
           </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
          </widget>
         </item>
        </layout>
+      </item>
+      <item>
+       <widget class="QSlider" name="timeRangeSlider">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>50</number>
+        </property>
+       </widget>
       </item>
       <item>
        <layout class="QGridLayout" name="gridLayout">
@@ -103,12 +127,18 @@
           <property name="maximum">
            <number>999</number>
           </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
          </widget>
         </item>
         <item row="1" column="1">
          <widget class="QSpinBox" name="end">
           <property name="maximum">
            <number>999</number>
+          </property>
+          <property name="singleStep">
+           <number>10</number>
           </property>
          </widget>
         </item>
@@ -128,20 +158,50 @@
           <property name="maximum">
            <number>999</number>
           </property>
+          <property name="singleStep">
+           <number>10</number>
+          </property>
          </widget>
         </item>
        </layout>
       </item>
       <item>
+       <widget class="QSlider" name="glyphTimeSlider">
+        <property name="maximum">
+         <number>999</number>
+        </property>
+        <property name="singleStep">
+         <number>10</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBothSides</enum>
+        </property>
+        <property name="tickInterval">
+         <number>10</number>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QComboBox" name="glyphShape">
+        <property name="font">
+         <font>
+          <family>Sans Serif</family>
+         </font>
+        </property>
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
+        </property>
         <item>
          <property name="text">
-          <string>sphere</string>
+          <string>Sphere</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>cube</string>
+          <string>Cube</string>
          </property>
         </item>
        </widget>
@@ -164,6 +224,9 @@
     </item>
    </layout>
   </widget>
+  <zorder>visualizationBox</zorder>
+  <zorder>layoutWidget</zorder>
+  <zorder>tubes</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -173,5 +236,70 @@
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>glyphTime</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>glyphTimeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>569</x>
+     <y>299</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>515</x>
+     <y>329</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>glyphTimeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>glyphTime</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>597</x>
+     <y>337</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>604</x>
+     <y>295</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>totalTimeRange</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>timeRangeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>565</x>
+     <y>164</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>506</x>
+     <y>190</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>timeRangeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>totalTimeRange</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>197</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>590</x>
+     <y>157</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

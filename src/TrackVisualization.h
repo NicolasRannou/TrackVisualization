@@ -90,18 +90,16 @@ void pointsAndScalarsGlyph(Lineage<TrackType> * polyDataList,
 
 template< class TrackType,
   class GlyphShape >
-void PlotTracksTemplate( vtkRenderWindow *renWin,vtkRenderWindowInteractor *iren, vtkRenderer* ren1,
+void PlotTracksTemplate(vtkRenderer* ren1,
     Lineage<TrackType>* RootNode,GlyphShape * glyphShape, bool tubesON,
     double totalTimeRange, double *trackTimeRange, double glyphTime)
   {
 
   //Remove actors if some exist
-	while(ren1->VisibleActorCount() != 0)
-	{
+  while(ren1->VisibleActorCount() != 0)
+    {
     ren1->RemoveActor(ren1->GetActors()->GetLastActor());
-	}
-
-	printf("NumberOfActors: %d \n", ren1->VisibleActorCount());
+    }
 
   // Store barycenters position and colors in *vtkPoints
   // and *vtkFloatArray
@@ -193,16 +191,6 @@ void PlotTracksTemplate( vtkRenderWindow *renWin,vtkRenderWindowInteractor *iren
 
   LUT->Delete();
   delete range;
-
-  // Render the volume
-
-  //ren1->ResetCamera();
-  //renWin->Render();
-
-  //iren->Start();
-
-  //renWin->Delete();
-  //iren->Delete();
 
 }
 
