@@ -9,6 +9,16 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
     MpegWriter = vtkMPEG2Writer::New();
     W2if = vtkWindowToImageFilter::New();
+   //
+   // visualizationBox->GetRenderWindow()->AddObserver();
+    SnapshotObserver = vtkSnapshotCommand::New();
+    SnapshotObserver->CallbackMpegWriter = MpegWriter;
+    SnapshotObserver->CallbackW2if = W2if;
+    SnapshotObserver->CallbackvisualizationBox = visualizationBox;
+
+
+    this->visualizationBox->GetInteractor()->AddObserver(QVTKWidget::DragMoveEvent, SnapshotObserver,1);
+    this->visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
   }
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
@@ -116,9 +126,10 @@ void TrackWidget::on_endVideo_clicked()
 
 void TrackWidget::on_visualizationBox_mouseEvent(QMouseEvent *event)
   {
-  visualizationBox->GetRenderWindow()->Render();
+    printf("Mouse event \n");
+  /*visualizationBox->GetRenderWindow()->Render();
   W2if->Modified();
-  MpegWriter->Write();
+  MpegWriter->Write();*/
   }
 
 void TrackWidget::on_begin_valueChanged(int value)

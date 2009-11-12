@@ -21,6 +21,26 @@
 #include "vtkWindowToImageFilter.h"
 #include "vtkMPEG2Writer.h"
 
+#include "vtkCommand.h"
+
+
+class vtkSnapshotCommand : public vtkCommand
+{
+public:
+  static vtkSnapshotCommand *New() { return new vtkSnapshotCommand; }
+  virtual void Execute(vtkObject *caller, unsigned long, void *callData)
+   {
+   CallbackvisualizationBox->GetRenderWindow()->Render();
+   CallbackW2if->Modified();
+   CallbackMpegWriter->Write();
+   std::cout<<"Event Called" <<std::endl;
+   }
+  vtkSnapshotCommand():CallbackMpegWriter(0),CallbackW2if(0),CallbackvisualizationBox(0){}
+  vtkMPEG2Writer* CallbackMpegWriter;
+  vtkWindowToImageFilter* CallbackW2if;
+  QVTKWidget* CallbackvisualizationBox;
+
+};
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
@@ -50,6 +70,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         Lineage<TrackType>* RootNode;
         vtkMPEG2Writer* MpegWriter;
         vtkWindowToImageFilter* W2if;
+        vtkSnapshotCommand* SnapshotObserver;
 
     private slots:
         void on_lines_clicked();
@@ -72,7 +93,6 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
 
 	void updateRenderingWindow();
 };
-
 
 #endif
 
