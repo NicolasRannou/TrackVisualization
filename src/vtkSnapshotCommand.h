@@ -5,19 +5,6 @@
 #include "vtkRenderWindow.h"
 #include "ui_DesignerTrackWidget.h"
 
-#include <vtkstd/map>
-#include "vtkPolyData.h"
-#include "Lineage.h"
-
-#include "vtkSphereSource.h"
-#include "vtkCubeSource.h"
-
-#include <string.h>
-
-#include "vtkRendererCollection.h"
-
-#include "TrackVisualization.h"
-
 #include "vtkWindowToImageFilter.h"
 
 #include <vtkFFMPEGWriter.h>
