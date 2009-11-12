@@ -8,18 +8,22 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     tubesON = false;
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
     MpegWriter = vtkMPEG2Writer::New();
+    AVIWriter = vtkFFMPEGWriter::New();
+    AVIWriter->SetQuality(2);
+    AVIWriter->SetRate(30);
     W2if = vtkWindowToImageFilter::New();
    //
    // visualizationBox->GetRenderWindow()->AddObserver();
     SnapshotObserver = vtkSnapshotCommand::New();
     SnapshotObserver->CallbackMpegWriter = MpegWriter;
+    SnapshotObserver->CallbackAVIWriter = AVIWriter;
     SnapshotObserver->CallbackW2if = W2if;
     SnapshotObserver->CallbackvisualizationBox = visualizationBox;
 
 
-    this->visualizationBox->GetInteractor()->AddObserver(QVTKWidget::DragMoveEvent, SnapshotObserver,1);
+    //this->visualizationBox->GetInteractor()->AddObserver(QVTKWidget::DragMoveEvent, SnapshotObserver,1);
     this->visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
-  }
+    }
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
   {
@@ -113,15 +117,18 @@ void TrackWidget::on_apply_clicked()
 void TrackWidget::on_startVideo_clicked()
   {
   W2if->SetInput(visualizationBox->GetRenderWindow());
-
+  /*
   MpegWriter->SetFileName("test.mpg");
   MpegWriter->SetInput(W2if->GetOutput());
-  MpegWriter->Start();
+  MpegWriter->Start();*/
+  AVIWriter->SetFileName("test.avi");
+  AVIWriter->SetInput(W2if->GetOutput());
+  AVIWriter->Start();
   }
 
 void TrackWidget::on_endVideo_clicked()
   {
-  MpegWriter->End();
+  AVIWriter->End();
   }
 
 void TrackWidget::on_visualizationBox_mouseEvent(QMouseEvent *event)
