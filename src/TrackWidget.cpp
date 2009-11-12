@@ -7,23 +7,31 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     linesON = true;
     tubesON = false;
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
-    MpegWriter = vtkMPEG2Writer::New();
-    AVIWriter = vtkFFMPEGWriter::New();
-    AVIWriter->SetQuality(2);
-    AVIWriter->SetRate(30);
+
+    FileName = "video_name";
+    VideoQuality = 1;
+    FrameRate = 30;
+
+    FFMPEGWriter = vtkFFMPEGWriter::New();
     W2if = vtkWindowToImageFilter::New();
-   //
-   // visualizationBox->GetRenderWindow()->AddObserver();
     SnapshotObserver = vtkSnapshotCommand::New();
-    SnapshotObserver->CallbackMpegWriter = MpegWriter;
-    SnapshotObserver->CallbackAVIWriter = AVIWriter;
+
+    SnapshotObserver->CallbackFFMPEGWriter = FFMPEGWriter;
     SnapshotObserver->CallbackW2if = W2if;
     SnapshotObserver->CallbackvisualizationBox = visualizationBox;
+    SnapshotObserver->CallbackImagesComptor = 0;
+    SnapshotObserver->CallbackFrameRate = 30;
+    SnapshotObserver->CallbackRecord = false;
 
-
-    //this->visualizationBox->GetInteractor()->AddObserver(QVTKWidget::DragMoveEvent, SnapshotObserver,1);
     this->visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
     }
+
+TrackWidget::~TrackWidget()
+  {
+  FFMPEGWriter->Delete();
+  W2if->Delete();
+  SnapshotObserver->Delete();
+  }
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
   {
@@ -102,13 +110,6 @@ void TrackWidget::on_glyphShape_activated ( int index )
   Shape = index;
   }
 
-/*void TrackWidget::on_glyphShape_activated ( const QString& shapeChar)
-  {
-    QByteArray convert = shapeChar.toLatin1();
-    ShapeChar = convert.data();
-    printf("test: %s", ShapeChar);
-  }*/
-
 void TrackWidget::on_apply_clicked()
   {
     updateRenderingWindow();
@@ -117,26 +118,36 @@ void TrackWidget::on_apply_clicked()
 void TrackWidget::on_startVideo_clicked()
   {
   W2if->SetInput(visualizationBox->GetRenderWindow());
-  /*
-  MpegWriter->SetFileName("test.mpg");
-  MpegWriter->SetInput(W2if->GetOutput());
-  MpegWriter->Start();*/
-  AVIWriter->SetFileName("test.avi");
-  AVIWriter->SetInput(W2if->GetOutput());
-  AVIWriter->Start();
+
+  QByteArray convertToConstChar = videoName->text().toLatin1();
+  FileName = convertToConstChar.data();
+
+  FFMPEGWriter->SetFileName(FileName);
+  FFMPEGWriter->SetQuality(VideoQuality);
+  FFMPEGWriter->SetRate(FrameRate);
+  FFMPEGWriter->SetInput(W2if->GetOutput());
+  FFMPEGWriter->Start();
+
+  SnapshotObserver->CallbackImagesComptor = 0;
+  SnapshotObserver->CallbackFrameRate = FrameRate;
+
+  bool enablePushButtons = true;
+  endVideo->setEnabled(enablePushButtons);
+  enablePushButtons = false;
+  startVideo->setEnabled(enablePushButtons);
+  SnapshotObserver->CallbackRecord = true;
+
   }
 
 void TrackWidget::on_endVideo_clicked()
   {
-  AVIWriter->End();
-  }
+  FFMPEGWriter->End();
 
-void TrackWidget::on_visualizationBox_mouseEvent(QMouseEvent *event)
-  {
-    printf("Mouse event \n");
-  /*visualizationBox->GetRenderWindow()->Render();
-  W2if->Modified();
-  MpegWriter->Write();*/
+  bool enablePushButtons = false;
+  endVideo->setEnabled(enablePushButtons);
+  enablePushButtons = true;
+  startVideo->setEnabled(enablePushButtons);
+  SnapshotObserver->CallbackRecord = false;
   }
 
 void TrackWidget::on_begin_valueChanged(int value)
@@ -170,19 +181,17 @@ void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
     //updateRenderingWindow();
   }
 
-/*
-void TrackWidget::on_glyphTimeSlider_sliderMoved(int value)
+void TrackWidget::on_videoQuality_valueChanged(int value)
   {
-    //GlyphTime = value;
-    updateRenderingWindow();
+    VideoQuality = value;
+    //updateRenderingWindow();
   }
 
-void TrackWidget::on_timeRangeSlider_sliderMoved(int value)
+void TrackWidget::on_frameRate_valueChanged(int value)
   {
-    //GlyphTime = value;
-    updateRenderingWindow();
+    FrameRate = value;
+    //updateRenderingWindow();
   }
-*/
 
 void TrackWidget::updateRenderingWindow()
   {

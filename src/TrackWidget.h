@@ -19,34 +19,15 @@
 #include "TrackVisualization.h"
 
 #include "vtkWindowToImageFilter.h"
-#include "vtkMPEG2Writer.h"
-
-#include <vtkAVIWriter.h>
 
 #include <vtkFFMPEGWriter.h>
 
 #include "vtkCommand.h"
 
+#include <qlcdnumber.h>
 
-class vtkSnapshotCommand : public vtkCommand
-{
-public:
-  static vtkSnapshotCommand *New() { return new vtkSnapshotCommand; }
-  virtual void Execute(vtkObject *caller, unsigned long, void *callData)
-   {
-   CallbackvisualizationBox->GetRenderWindow()->Render();
-   CallbackW2if->Modified();
-   //CallbackMpegWriter->Write();
-   CallbackAVIWriter->Write();
-   std::cout<<"Event Called" <<std::endl;
-   }
-  vtkSnapshotCommand():CallbackMpegWriter(0),CallbackW2if(0),CallbackvisualizationBox(0){}
-  vtkMPEG2Writer* CallbackMpegWriter;
-  vtkFFMPEGWriter* CallbackAVIWriter;
-  vtkWindowToImageFilter* CallbackW2if;
-  QVTKWidget* CallbackvisualizationBox;
+#include "vtkSnapshotCommand.h"
 
-};
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
@@ -57,6 +38,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         typedef vtkstd::map<double, vtkPolyData*> TrackType;
 
         TrackWidget(QWidget *parent = 0);
+        ~TrackWidget();
         void SetRenderer (vtkRenderer *renderer);
         void SetRenderWindow (vtkRenderWindow *renderWindow);
         void SetRenderWindowInteractor (vtkRenderWindowInteractor *renderWindowInteractor);
@@ -72,10 +54,12 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         bool tubesON, linesON;
         int Begin, End, TotalTimeRange, GlyphTime;
         int Shape;
-        //const char* ShapeChar;
+        const char* FileName;
+        int VideoQuality;
+        int FrameRate;
+
         Lineage<TrackType>* RootNode;
-        vtkMPEG2Writer* MpegWriter;
-        vtkFFMPEGWriter* AVIWriter;
+        vtkFFMPEGWriter* FFMPEGWriter;
         vtkWindowToImageFilter* W2if;
         vtkSnapshotCommand* SnapshotObserver;
 
@@ -85,18 +69,16 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_tubes_toggled(bool on);
         void on_lines_toggled(bool on);
         void on_glyphShape_activated ( int index );
-        //void on_glyphShape_activated (const QString& shapeChar);
         void on_apply_clicked();
         void on_startVideo_clicked();
         void on_endVideo_clicked();
-        void on_visualizationBox_mouseEvent(QMouseEvent *event);
         void on_begin_valueChanged(int value);
 	void on_end_valueChanged(int value);
 	void on_totalTimeRange_valueChanged(int value);
+	void on_videoQuality_valueChanged(int value);
+	void on_frameRate_valueChanged(int value);
 	void on_glyphTime_valueChanged(int value);
 	void on_glyphTimeSlider_valueChanged(int value);
-	//void on_glyphTimeSlider_sliderMoved(int value);
-	//void on_timeRangeSlider_sliderMoved(int value);
 
 	void updateRenderingWindow();
 };
