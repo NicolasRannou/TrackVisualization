@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1052</width>
-    <height>715</height>
+    <width>1053</width>
+    <height>698</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -18,18 +18,180 @@
     <rect>
      <x>20</x>
      <y>30</y>
-     <width>781</width>
-     <height>561</height>
+     <width>791</width>
+     <height>581</height>
     </rect>
    </property>
+  </widget>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>590</x>
+     <y>640</y>
+     <width>190</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_12">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Video Length&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLCDNumber" name="videoLength"/>
+    </item>
+   </layout>
   </widget>
   <widget class="QWidget" name="">
    <property name="geometry">
     <rect>
      <x>830</x>
-     <y>10</y>
+     <y>390</y>
+     <width>201</width>
+     <height>274</height>
+    </rect>
+   </property>
+   <layout class="QGridLayout" name="gridLayout_15">
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Video parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QFrame" name="frame_2">
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_14">
+       <item row="0" column="0">
+        <layout class="QGridLayout" name="gridLayout_13">
+         <item row="0" column="0">
+          <widget class="QLabel" name="videoNameLabel">
+           <property name="text">
+            <string>Name of the video</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="0">
+          <widget class="QLineEdit" name="videoName">
+           <property name="inputMask">
+            <string/>
+           </property>
+           <property name="text">
+            <string>video_name</string>
+           </property>
+          </widget>
+         </item>
+         <item row="2" column="0">
+          <layout class="QGridLayout" name="gridLayout_11">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Frame Rate</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="frameRate">
+             <property name="value">
+              <number>30</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="3" column="0">
+          <layout class="QGridLayout" name="gridLayout_4">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Video Quality</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="videoQuality">
+             <property name="minimum">
+              <number>0</number>
+             </property>
+             <property name="maximum">
+              <number>2</number>
+             </property>
+             <property name="value">
+              <number>1</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="4" column="0">
+          <widget class="QPushButton" name="startVideo">
+           <property name="text">
+            <string>Start a video capture</string>
+           </property>
+          </widget>
+         </item>
+         <item row="5" column="0">
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="addFrame">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="text">
+              <string>Add frames</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QSpinBox" name="addFrameComptor">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item row="6" column="0">
+          <widget class="QPushButton" name="endVideo">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>End a video capture</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="">
+   <property name="geometry">
+    <rect>
+     <x>830</x>
+     <y>20</y>
      <width>200</width>
-     <height>424</height>
+     <height>351</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_10">
@@ -77,32 +239,13 @@ p, li { white-space: pre-wrap; }
           </layout>
          </item>
          <item row="1" column="0">
-          <widget class="QSlider" name="timeRangeSlider">
-           <property name="maximum">
-            <number>999</number>
-           </property>
-           <property name="singleStep">
-            <number>10</number>
-           </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
-           </property>
-           <property name="tickPosition">
-            <enum>QSlider::TicksBothSides</enum>
-           </property>
-           <property name="tickInterval">
-            <number>50</number>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
           <widget class="QLabel" name="label_3">
            <property name="text">
             <string>TrackTimeRange</string>
            </property>
           </widget>
          </item>
-         <item row="3" column="0">
+         <item row="2" column="0">
           <layout class="QGridLayout" name="gridLayout_5">
            <item row="0" column="0">
             <widget class="QSpinBox" name="begin">
@@ -126,7 +269,7 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </item>
-         <item row="4" column="0">
+         <item row="3" column="0">
           <layout class="QGridLayout" name="gridLayout_3">
            <item row="0" column="0">
             <widget class="QLabel" name="label_2">
@@ -147,7 +290,7 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </item>
-         <item row="5" column="0">
+         <item row="4" column="0">
           <widget class="QSlider" name="glyphTimeSlider">
            <property name="maximum">
             <number>999</number>
@@ -166,33 +309,32 @@ p, li { white-space: pre-wrap; }
            </property>
           </widget>
          </item>
-         <item row="6" column="0">
-          <widget class="QGroupBox" name="groupBox">
-           <property name="title">
-            <string>Track aspect</string>
-           </property>
-           <layout class="QGridLayout" name="gridLayout_7">
-            <item row="0" column="0">
-             <widget class="QRadioButton" name="lines">
+         <item row="5" column="0">
+          <layout class="QGridLayout" name="gridLayout_7">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Track Aspect</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="trackShape">
+             <item>
               <property name="text">
-               <string>lines</string>
+               <string>Lines</string>
               </property>
-              <property name="checked">
-               <bool>true</bool>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="0">
-             <widget class="QRadioButton" name="tubes">
+             </item>
+             <item>
               <property name="text">
-               <string>tubes</string>
+               <string>Tubes</string>
               </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+             </item>
+            </widget>
+           </item>
+          </layout>
          </item>
-         <item row="7" column="0">
+         <item row="6" column="0">
           <layout class="QGridLayout" name="gridLayout">
            <item row="0" column="0">
             <widget class="QLabel" name="label_6">
@@ -228,6 +370,19 @@ p, li { white-space: pre-wrap; }
            </item>
           </layout>
          </item>
+         <item row="7" column="0">
+          <widget class="QCheckBox" name="autoResetCamera">
+           <property name="text">
+            <string>Auto Reset Camera</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+           <property name="tristate">
+            <bool>false</bool>
+           </property>
+          </widget>
+         </item>
          <item row="8" column="0">
           <widget class="QPushButton" name="apply">
            <property name="text">
@@ -239,149 +394,6 @@ p, li { white-space: pre-wrap; }
        </item>
       </layout>
      </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>831</x>
-     <y>451</y>
-     <width>201</width>
-     <height>234</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_11">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;Video parameters&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QFrame" name="frame_2">
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QGridLayout" name="gridLayout_4">
-       <item row="0" column="0">
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0" colspan="3">
-          <widget class="QLabel" name="videoNameLabel">
-           <property name="text">
-            <string>Name of the video</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="0">
-          <widget class="QLabel" name="label_5">
-           <property name="text">
-            <string>Frame Rate</string>
-           </property>
-          </widget>
-         </item>
-         <item row="2" column="1" colspan="2">
-          <widget class="QSpinBox" name="frameRate">
-           <property name="value">
-            <number>30</number>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="0" colspan="2">
-          <widget class="QLabel" name="label_4">
-           <property name="text">
-            <string>Video Quality</string>
-           </property>
-          </widget>
-         </item>
-         <item row="3" column="2">
-          <widget class="QSpinBox" name="videoQuality">
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <number>2</number>
-           </property>
-           <property name="value">
-            <number>1</number>
-           </property>
-          </widget>
-         </item>
-         <item row="4" column="0" colspan="3">
-          <widget class="QPushButton" name="startVideo">
-           <property name="text">
-            <string>Start a video capture</string>
-           </property>
-          </widget>
-         </item>
-         <item row="5" column="0" colspan="3">
-          <widget class="QPushButton" name="endVideo">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>End a video capture</string>
-           </property>
-          </widget>
-         </item>
-         <item row="1" column="0" colspan="3">
-          <widget class="QLineEdit" name="videoName">
-           <property name="inputMask">
-            <string/>
-           </property>
-           <property name="text">
-            <string>video_name</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-      </layout>
-      <zorder>videoName</zorder>
-      <zorder>videoNameLabel</zorder>
-      <zorder>videoQuality</zorder>
-      <zorder>endVideo</zorder>
-      <zorder>startVideo</zorder>
-      <zorder>label_4</zorder>
-      <zorder>label_5</zorder>
-      <zorder>frameRate</zorder>
-      <zorder>plainTextEdit</zorder>
-      <zorder>textEdit</zorder>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QWidget" name="">
-   <property name="geometry">
-    <rect>
-     <x>590</x>
-     <y>640</y>
-     <width>190</width>
-     <height>25</height>
-    </rect>
-   </property>
-   <layout class="QGridLayout" name="gridLayout_12">
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Sans'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600;&quot;&gt;Video Length&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLCDNumber" name="videoLength"/>
     </item>
    </layout>
   </widget>

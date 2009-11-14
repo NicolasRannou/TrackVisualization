@@ -26,7 +26,7 @@
 
 #include <qlcdnumber.h>
 
-#include "vtkSnapshotCommand.h"
+#include "vtkWriteVideoCommand.h"
 
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
@@ -47,40 +47,47 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void SetGlyphTime(int value);
         void SetRootNode(Lineage<TrackType> * root);
 
+        void ConfigureWidget();
+
     private:
         vtkRenderer *Renderer;
         vtkRenderWindow *RenderWindow;
         vtkRenderWindowInteractor *RenderWindowInteractor;
-        bool tubesON, linesON;
+        bool TrackShape;
         int Begin, End, TotalTimeRange, GlyphTime;
         int Shape;
         const char* FileName;
         int VideoQuality;
         int FrameRate;
+        int AddFrameComptor;
+
+        bool AutoResetCamera;
 
         Lineage<TrackType>* RootNode;
         vtkFFMPEGWriter* FFMPEGWriter;
         vtkWindowToImageFilter* W2if;
-        vtkSnapshotCommand* SnapshotObserver;
+        vtkWriteVideoCommand* SnapshotObserver;
+
+        void updateRenderingWindow();
+
 
     private slots:
-        void on_lines_clicked();
-        void on_tubes_clicked();
-        void on_tubes_toggled(bool on);
-        void on_lines_toggled(bool on);
+        void on_trackShape_activated ( int index );
         void on_glyphShape_activated ( int index );
         void on_apply_clicked();
         void on_startVideo_clicked();
         void on_endVideo_clicked();
         void on_begin_valueChanged(int value);
-	void on_end_valueChanged(int value);
-	void on_totalTimeRange_valueChanged(int value);
-	void on_videoQuality_valueChanged(int value);
-	void on_frameRate_valueChanged(int value);
-	void on_glyphTime_valueChanged(int value);
-	void on_glyphTimeSlider_valueChanged(int value);
+        void on_end_valueChanged(int value);
+        void on_totalTimeRange_valueChanged(int value);
+        void on_videoQuality_valueChanged(int value);
+        void on_frameRate_valueChanged(int value);
+		void on_glyphTime_valueChanged(int value);
+		void on_glyphTimeSlider_valueChanged(int value);
+		void on_addFrameComptor_valueChanged(int value);
+		void on_addFrame_clicked();
+		void on_autoResetCamera_toggled(bool on);
 
-	void updateRenderingWindow();
 };
 
 #endif

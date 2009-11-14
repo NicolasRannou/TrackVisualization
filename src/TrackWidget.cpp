@@ -4,17 +4,20 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
   {
     setupUi(this);
     Shape = 0;
-    linesON = true;
-    tubesON = false;
+    TrackShape = false;
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
+
+    AutoResetCamera = true;
 
     FileName = "video_name";
     VideoQuality = 1;
     FrameRate = 30;
+    AddFrameComptor = 0;
 
     FFMPEGWriter = vtkFFMPEGWriter::New();
     W2if = vtkWindowToImageFilter::New();
-    SnapshotObserver = vtkSnapshotCommand::New();
+    SnapshotObserver = vtkWriteVideoCommand::New();
+
 
     SnapshotObserver->CallbackFFMPEGWriter = FFMPEGWriter;
     SnapshotObserver->CallbackW2if = W2if;
@@ -23,7 +26,7 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     SnapshotObserver->CallbackFrameRate = 30;
     SnapshotObserver->CallbackRecord = false;
 
-    this->visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
+    visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
     }
 
 TrackWidget::~TrackWidget()
@@ -82,32 +85,23 @@ void TrackWidget::SetRootNode(Lineage<TrackType> * root)
   RootNode = root;
   }
 
-void TrackWidget::on_lines_clicked()
+void TrackWidget::on_trackShape_activated ( int index )
   {
-
-  }
-
-
-void TrackWidget::on_tubes_clicked()
-  {
-
-  }
-
-void TrackWidget::on_tubes_toggled(bool on)
-  {
-  tubesON = on;
-  //updateRenderingWindow();
-
-  }
-
-void TrackWidget::on_lines_toggled(bool on)
-  {
-  linesON = on;
+  if(index == 0)
+    {
+	TrackShape = false;
+    }
+  else
+    {
+	TrackShape = true;
+    }
+  updateRenderingWindow();
   }
 
 void TrackWidget::on_glyphShape_activated ( int index )
   {
   Shape = index;
+  updateRenderingWindow();
   }
 
 void TrackWidget::on_apply_clicked()
@@ -133,6 +127,8 @@ void TrackWidget::on_startVideo_clicked()
 
   bool enablePushButtons = true;
   endVideo->setEnabled(enablePushButtons);
+  addFrame->setEnabled(enablePushButtons);
+  addFrameComptor->setEnabled(enablePushButtons);
   enablePushButtons = false;
   startVideo->setEnabled(enablePushButtons);
   SnapshotObserver->CallbackRecord = true;
@@ -145,52 +141,128 @@ void TrackWidget::on_endVideo_clicked()
 
   bool enablePushButtons = false;
   endVideo->setEnabled(enablePushButtons);
+  addFrame->setEnabled(enablePushButtons);
+  addFrameComptor->setEnabled(enablePushButtons);
   enablePushButtons = true;
   startVideo->setEnabled(enablePushButtons);
   SnapshotObserver->CallbackRecord = false;
   }
 
+void TrackWidget::on_addFrame_clicked()
+  {
+  if(AddFrameComptor != 0)
+    {
+    for(int i = 0; i < AddFrameComptor; i++)
+	  {
+	  FFMPEGWriter->Write();
+	  }
+    }
+  }
+
 void TrackWidget::on_begin_valueChanged(int value)
   {
-    Begin = value;
-    //updateRenderingWindow();
+  if( value != Begin )
+	{
+	if( value < Begin )
+	  {
+      Begin = value;
+      updateRenderingWindow();
+	  }
+	else
+	  {
+	  if( value <= End )
+	    {
+		  Begin = value;
+	   	updateRenderingWindow();
+	    }
+	  else
+	    {
+	  	begin->setValue(End);
+	    }
+	  }
+	}
   }
 
 void TrackWidget::on_end_valueChanged(int value)
   {
-    End = value;
-    //updateRenderingWindow();
+  if( value != End )
+    {
+    if( value > End )
+      {
+      End = value;
+	  updateRenderingWindow();
+      }
+    else
+      {
+      if( value >= Begin )
+        {
+    	End = value;
+    	updateRenderingWindow();
+        }
+      else
+        {
+    	end->setValue(Begin);
+        }
+      }
+	}
   }
 
 void TrackWidget::on_totalTimeRange_valueChanged(int value)
   {
-  TotalTimeRange = value;
-  glyphTimeSlider->setMaxValue(value);
-  //updateRenderingWindow();
+
+  if( value != TotalTimeRange && value > 0 )
+  	{
+	TotalTimeRange = value;
+  	updateRenderingWindow();
+  	}
   }
 
 void TrackWidget::on_glyphTime_valueChanged(int value)
   {
-    GlyphTime = value;
-    //updateRenderingWindow();
+	if( value != GlyphTime )
+		{
+		if( value < GlyphTime )
+		  {
+			GlyphTime = value;
+	      updateRenderingWindow();
+		  }
+		else
+		  {
+		  if( value <= End )
+		    {
+			GlyphTime = value;
+		   	updateRenderingWindow();
+		    }
+		  else
+		    {
+		  	glyphTime->setValue(End);
+		    }
+		  }
+		}
   }
 
 void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
   {
-    GlyphTime = value;
-    //updateRenderingWindow();
+	if( value != GlyphTime )
+		{
+		GlyphTime = value;
+		updateRenderingWindow();
+		}
   }
 
 void TrackWidget::on_videoQuality_valueChanged(int value)
   {
     VideoQuality = value;
-    //updateRenderingWindow();
   }
 
 void TrackWidget::on_frameRate_valueChanged(int value)
   {
     FrameRate = value;
-    //updateRenderingWindow();
+  }
+
+void TrackWidget::on_addFrameComptor_valueChanged(int value)
+  {
+    AddFrameComptor = value;
   }
 
 void TrackWidget::updateRenderingWindow()
@@ -200,39 +272,12 @@ void TrackWidget::updateRenderingWindow()
   trackTimeRange[0] = Begin;
   trackTimeRange[1] = End;
 
-/*//doesn't work crossed initialisation
-  switch (ShapeInt)
-      {
-      case 0:
-  	vtkSphereSource *sphereShape = vtkSphereSource::New();
-  	sphereShape->SetRadius(0.1);
-
-  	PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, linesON,
-  	  TotalTimeRange, trackTimeRange, GlyphTime);
-  	sphereShape->Delete();
-  	break;
-
-      case 1:
-  	vtkCubeSource *cubeShape = vtkCubeSource::New();
-  	cubeShape->SetXLength(0.2);
-  	cubeShape->SetYLength(0.2);
-  	cubeShape->SetZLength(0.2);
-
-  	PlotTracksTemplate<TrackType, vtkCubeSource >(Renderer, RootNode, cubeShape, linesON,
-  	  TotalTimeRange, trackTimeRange, GlyphTime);
-  	cubeShape->Delete();
-  	break;
-
-      default:
-	  break;
-      }*/
-
     if(Shape == 0)
       {
       vtkSphereSource *sphereShape = vtkSphereSource::New();
       sphereShape->SetRadius(0.1);
 
-      PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, tubesON,
+      PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, TrackShape,
         TotalTimeRange, trackTimeRange, GlyphTime);
       sphereShape->Delete();
       }
@@ -244,11 +289,36 @@ void TrackWidget::updateRenderingWindow()
       cubeShape->SetYLength(0.2);
       cubeShape->SetZLength(0.2);
 
-      PlotTracksTemplate<TrackType, vtkCubeSource >(Renderer, RootNode, cubeShape, tubesON,
+      PlotTracksTemplate<TrackType, vtkCubeSource >(Renderer, RootNode, cubeShape, TrackShape,
         TotalTimeRange, trackTimeRange, GlyphTime);
       cubeShape->Delete();
       }
+  if(AutoResetCamera)
+    {
+    Renderer->ResetCamera();
+    }
+  visualizationBox->update();
+  }
+
+void TrackWidget::on_autoResetCamera_toggled(bool on)
+  {
+  AutoResetCamera = on;
+  }
+
+void TrackWidget::ConfigureWidget()
+  {
+  double * trackTimeRange = new double[2];
+  trackTimeRange[0] = Begin;
+  trackTimeRange[1] = End;
+
+  vtkSphereSource *sphereShape = vtkSphereSource::New();
+  sphereShape->SetRadius(0.1);
+
+  PlotTracksTemplate<TrackType, vtkSphereSource >(Renderer, RootNode, sphereShape, TrackShape,
+    TotalTimeRange, trackTimeRange, GlyphTime);
+  sphereShape->Delete();
 
   Renderer->ResetCamera();
   visualizationBox->update();
   }
+

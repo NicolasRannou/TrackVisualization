@@ -411,7 +411,6 @@ void TrackSplinesColors(Lineage<TrackType> * polyDataList,
           splinesColors->InsertValue (0,
               containerIterator->first/totalTimeRange);
 
-          
           /*if(!polyDataList->IsRoot())
             {
             containerIterator
@@ -443,6 +442,8 @@ void TrackSplinesColors(Lineage<TrackType> * polyDataList,
             = polyDataList->GetDaughter2()->GetTrack()[0].begin();
           splinesColors->InsertValue (0,
               containerIterator->first/totalTimeRange);
+
+
 
           /*if(!polyDataList->IsRoot())
             {

@@ -137,8 +137,8 @@ int main( int argc, char *argv[] )
   t6.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
   polyDataIterator++;
   t7.insert( vtkstd::make_pair( 100, *polyDataIterator ) );
-  //polyDataIterator++;
-  //t8.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
+  polyDataIterator++;
+  t8.insert( vtkstd::make_pair( 60, *polyDataIterator ) );
 
   Lineage<TrackType>* RootNode = new Lineage<TrackType>(0, &t0);
   Lineage<TrackType>* Node1 = new Lineage<TrackType>(RootNode, &t1);
@@ -153,10 +153,11 @@ int main( int argc, char *argv[] )
   Node2->SetDaughter1( Node5 );
   Lineage<TrackType>* Node6 = new Lineage<TrackType>(Node5, &t6);
   Node2->SetDaughter2( Node6 );
+
   Lineage<TrackType>* Node7 = new Lineage<TrackType>(Node3, &t7);
-  //Lineage<TrackType>* Node8 = new Lineage<TrackType>(Node3, &t8);
-  Node3->SetDaughter2( Node7 );
-  //Node3->SetDaughter1( Node8 );
+  Lineage<TrackType>* Node8 = new Lineage<TrackType>(Node5, &t8);
+  Node5->SetDaughter2( Node8 );
+  Node3->SetDaughter1( Node7 );
   
   // Create the rendering window
   renWin->AddRenderer(ren1);
@@ -184,6 +185,7 @@ int main( int argc, char *argv[] )
   window.SetEndTime(totalTimeRange);
   window.SetGlyphTime(totalTimeRange/2);
   window.SetRootNode(RootNode);
+  window.ConfigureWidget();
 
  //add tree root
 
