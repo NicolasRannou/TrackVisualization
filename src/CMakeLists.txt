@@ -58,6 +58,11 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
 ADD_EXECUTABLE( TrackWidget MACOSX_BUNDLE ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
+ADD_TEST( TrackWidgetTestWithPolydatas
+  ${EXECUTABLE_OUTPUT_PATH}/TrackWidget
+  ${TESTING_DATA_PATH}/
+)
+
 
 TARGET_LINK_LIBRARIES( TrackWidget
   QVTK
@@ -69,4 +74,3 @@ TARGET_LINK_LIBRARIES( TrackWidget
   vtkInfovis
   vtkViews
 )
-
