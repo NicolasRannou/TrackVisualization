@@ -29,7 +29,7 @@
      <x>830</x>
      <y>20</y>
      <width>200</width>
-     <height>357</height>
+     <height>361</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_10">
@@ -344,6 +344,9 @@ p, li { white-space: pre-wrap; }
            </item>
            <item row="0" column="1">
             <widget class="QDoubleSpinBox" name="videoLength">
+             <property name="wrapping">
+              <bool>false</bool>
+             </property>
              <property name="alignment">
               <set>Qt::AlignCenter</set>
              </property>
@@ -383,5 +386,38 @@ p, li { white-space: pre-wrap; }
   </customwidget>
  </customwidgets>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>glyphTime</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>glyphTimeSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>962</x>
+     <y>187</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>897</x>
+     <y>225</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>glyphTimeSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>glyphTime</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>1000</x>
+     <y>231</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>994</x>
+     <y>202</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

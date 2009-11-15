@@ -137,6 +137,7 @@ void TrackWidget::on_begin_valueChanged(int value)
 	if( value < Begin )
 	  {
       Begin = value;
+      glyphTimeSlider->setMinValue(value);
       updateRenderingWindow();
 	  }
 	else
@@ -144,6 +145,7 @@ void TrackWidget::on_begin_valueChanged(int value)
 	  if( value <= End )
 	    {
 		  Begin = value;
+		  glyphTimeSlider->setMinValue(value);
 	   	updateRenderingWindow();
 	    }
 	  else
@@ -161,6 +163,7 @@ void TrackWidget::on_end_valueChanged(int value)
     if( value > End )
       {
       End = value;
+      glyphTimeSlider->setMaxValue(value);
 	  updateRenderingWindow();
       }
     else
@@ -169,6 +172,7 @@ void TrackWidget::on_end_valueChanged(int value)
         {
     	End = value;
     	updateRenderingWindow();
+    	glyphTimeSlider->setMaxValue(value);
         }
       else
         {
@@ -176,6 +180,8 @@ void TrackWidget::on_end_valueChanged(int value)
         }
       }
 	}
+  else
+	  glyphTimeSlider->setMaxValue(value);
   }
 
 void TrackWidget::on_totalTimeRange_valueChanged(int value)
@@ -192,33 +198,37 @@ void TrackWidget::on_glyphTime_valueChanged(int value)
   {
 	if( value != GlyphTime )
 		{
-		if( value < GlyphTime )
-		  {
-			GlyphTime = value;
-	      updateRenderingWindow();
-		  }
-		else
-		  {
-		  if( value <= End )
+
+		  if( value <= End && value >= Begin)
 		    {
 			GlyphTime = value;
 		   	updateRenderingWindow();
 		    }
 		  else
 		    {
+			if(value > End)
 		  	glyphTime->setValue(End);
+			else
+			glyphTime->setValue(Begin);
 		    }
-		  }
 		}
   }
 
 void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
   {
 	if( value != GlyphTime )
-		{
-		GlyphTime = value;
-		updateRenderingWindow();
-		}
+			{
+
+			  if( value <= End && value >= Begin)
+			    {
+				GlyphTime = value;
+			   	updateRenderingWindow();
+			    }
+			  else
+			    {
+			  	glyphTime->setValue(End);
+			    }
+			}
   }
 
 void TrackWidget::on_videoQuality_valueChanged(int value)
