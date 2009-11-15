@@ -7,33 +7,25 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
     TrackShape = false;
     Begin = 0, End = 0, TotalTimeRange = 0, GlyphTime = 0;
 
+    internalTimer = new QTimer( this );
+    connect( internalTimer, SIGNAL(timeout()), SLOT(timeout()) );
+    videoLength->setValue(0);
+
     AutoResetCamera = true;
 
     FileName = "video_name";
     VideoQuality = 1;
     FrameRate = 30;
-    AddFrameComptor = 0;
+    FrameComptor = 0;
 
     FFMPEGWriter = vtkFFMPEGWriter::New();
     W2if = vtkWindowToImageFilter::New();
-    SnapshotObserver = vtkWriteVideoCommand::New();
-
-
-    SnapshotObserver->CallbackFFMPEGWriter = FFMPEGWriter;
-    SnapshotObserver->CallbackW2if = W2if;
-    SnapshotObserver->CallbackvisualizationBox = visualizationBox;
-    SnapshotObserver->CallbackImagesComptor = 0;
-    SnapshotObserver->CallbackFrameRate = 30;
-    SnapshotObserver->CallbackRecord = false;
-
-    visualizationBox->GetRenderWindow()->AddObserver(vtkCommand::StartEvent, SnapshotObserver);
     }
 
 TrackWidget::~TrackWidget()
   {
   FFMPEGWriter->Delete();
   W2if->Delete();
-  SnapshotObserver->Delete();
   }
 
 void TrackWidget::SetRenderer(vtkRenderer *renderer)
@@ -41,9 +33,6 @@ void TrackWidget::SetRenderer(vtkRenderer *renderer)
   Renderer = renderer;
   
   visualizationBox-> GetRenderWindow()-> AddRenderer(this->Renderer);
-
-  //this->RenderWindow->AddRenderer(this->Renderer);
-  //this->RenderWindowInteractor->SetRenderWindow(this->RenderWindow);
   }
 
 void TrackWidget::SetRenderWindow (vtkRenderWindow *renderWindow)
@@ -51,8 +40,6 @@ void TrackWidget::SetRenderWindow (vtkRenderWindow *renderWindow)
   RenderWindow = renderWindow;
 
   visualizationBox->SetRenderWindow(this->RenderWindow);
-  //this->visualizationBox->GetRenderWindow()->Render();
-  //this->visualizationBox->update();
   }
 
 void TrackWidget::SetRenderWindowInteractor (vtkRenderWindowInteractor *renderWindowInteractor)
@@ -122,17 +109,12 @@ void TrackWidget::on_startVideo_clicked()
   FFMPEGWriter->SetInput(W2if->GetOutput());
   FFMPEGWriter->Start();
 
-  SnapshotObserver->CallbackImagesComptor = 0;
-  SnapshotObserver->CallbackFrameRate = FrameRate;
 
   bool enablePushButtons = true;
   endVideo->setEnabled(enablePushButtons);
-  addFrame->setEnabled(enablePushButtons);
-  addFrameComptor->setEnabled(enablePushButtons);
   enablePushButtons = false;
   startVideo->setEnabled(enablePushButtons);
-  SnapshotObserver->CallbackRecord = true;
-
+  internalTimer->start( 1000/FrameRate );
   }
 
 void TrackWidget::on_endVideo_clicked()
@@ -141,22 +123,11 @@ void TrackWidget::on_endVideo_clicked()
 
   bool enablePushButtons = false;
   endVideo->setEnabled(enablePushButtons);
-  addFrame->setEnabled(enablePushButtons);
-  addFrameComptor->setEnabled(enablePushButtons);
   enablePushButtons = true;
   startVideo->setEnabled(enablePushButtons);
-  SnapshotObserver->CallbackRecord = false;
-  }
 
-void TrackWidget::on_addFrame_clicked()
-  {
-  if(AddFrameComptor != 0)
-    {
-    for(int i = 0; i < AddFrameComptor; i++)
-	  {
-	  FFMPEGWriter->Write();
-	  }
-    }
+  internalTimer->stop();
+  FrameComptor = 0;
   }
 
 void TrackWidget::on_begin_valueChanged(int value)
@@ -260,11 +231,6 @@ void TrackWidget::on_frameRate_valueChanged(int value)
     FrameRate = value;
   }
 
-void TrackWidget::on_addFrameComptor_valueChanged(int value)
-  {
-    AddFrameComptor = value;
-  }
-
 void TrackWidget::updateRenderingWindow()
   {
 
@@ -322,3 +288,14 @@ void TrackWidget::ConfigureWidget()
   visualizationBox->update();
   }
 
+void TrackWidget::timeout()
+{
+	visualizationBox->GetRenderWindow()->Render();
+	W2if->Modified();
+	FFMPEGWriter->Write();
+
+    FrameComptor++;
+    double doubleComptor;
+    doubleComptor = (double)FrameComptor/(double)FrameRate;
+    videoLength->setValue(doubleComptor);
+}

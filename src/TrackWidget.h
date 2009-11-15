@@ -14,8 +14,6 @@
 
 #include <string.h>
 
-#include "vtkRendererCollection.h"
-
 #include "TrackVisualization.h"
 
 #include "vtkWindowToImageFilter.h"
@@ -23,10 +21,6 @@
 #include <vtkFFMPEGWriter.h>
 
 #include "vtkCommand.h"
-
-#include <qlcdnumber.h>
-
-#include "vtkWriteVideoCommand.h"
 
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
@@ -57,16 +51,18 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         int Begin, End, TotalTimeRange, GlyphTime;
         int Shape;
         const char* FileName;
+
+        QTimer *internalTimer;
+
         int VideoQuality;
         int FrameRate;
-        int AddFrameComptor;
+        int FrameComptor;
 
         bool AutoResetCamera;
 
         Lineage<TrackType>* RootNode;
         vtkFFMPEGWriter* FFMPEGWriter;
         vtkWindowToImageFilter* W2if;
-        vtkWriteVideoCommand* SnapshotObserver;
 
         void updateRenderingWindow();
 
@@ -84,9 +80,8 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_frameRate_valueChanged(int value);
 		void on_glyphTime_valueChanged(int value);
 		void on_glyphTimeSlider_valueChanged(int value);
-		void on_addFrameComptor_valueChanged(int value);
-		void on_addFrame_clicked();
 		void on_autoResetCamera_toggled(bool on);
+		void timeout();
 
 };
 
