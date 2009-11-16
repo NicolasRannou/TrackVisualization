@@ -20,23 +20,17 @@
 
 #include <vtkFFMPEGWriter.h>
 
-#include "vtkCommand.h"
-
-
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
     Q_OBJECT
-
 
     public:
         typedef vtkstd::map<double, vtkPolyData*> TrackType;
 
         TrackWidget(QWidget *parent = 0);
         ~TrackWidget();
-        void SetRenderer (vtkRenderer *renderer);
-        void SetRenderWindow (vtkRenderWindow *renderWindow);
-        void SetRenderWindowInteractor (vtkRenderWindowInteractor *renderWindowInteractor);
-        void SetTotalTimeRange(int value);
+
+        void SetRenderer (vtkRenderer *renderer);void SetTotalTimeRange(int value);
         void SetEndTime(int value);
         void SetGlyphTime(int value);
         void SetRootNode(Lineage<TrackType> * root);
@@ -44,25 +38,19 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void ConfigureWidget();
 
     private:
-        vtkRenderer *Renderer;
-        vtkRenderWindow *RenderWindow;
-        vtkRenderWindowInteractor *RenderWindowInteractor;
-        bool TrackShape;
-        int Begin, End, TotalTimeRange, GlyphTime;
-        int Shape;
-        const char* FileName;
-
-        QTimer *internalTimer;
-
-        int VideoQuality;
-        int FrameRate;
-        int FrameComptor;
-
-        bool AutoResetCamera;
-
-        Lineage<TrackType>* RootNode;
-        vtkFFMPEGWriter* FFMPEGWriter;
-        vtkWindowToImageFilter* W2if;
+        vtkRenderer *m_Renderer;
+        bool m_TrackShape;
+        int m_Begin, m_End, m_TotalTimeRange, m_GlyphTime;
+        int m_Shape;
+        const char* m_FileName;
+        QTimer *m_InternalTimer;
+        int m_VideoQuality;
+        int m_FrameRate;
+        int m_FrameComptor;
+        bool m_AutoResetCamera;
+        Lineage<TrackType>* m_RootNode;
+        vtkFFMPEGWriter* m_FFMPEGWriter;
+        vtkWindowToImageFilter* m_W2if;
 
         void updateRenderingWindow();
 
@@ -70,7 +58,6 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
     private slots:
         void on_trackShape_activated ( int index );
         void on_glyphShape_activated ( int index );
-        void on_apply_clicked();
         void on_startVideo_clicked();
         void on_endVideo_clicked();
         void on_begin_valueChanged(int value);
@@ -78,10 +65,10 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_totalTimeRange_valueChanged(int value);
         void on_videoQuality_valueChanged(int value);
         void on_frameRate_valueChanged(int value);
-		void on_glyphTime_valueChanged(int value);
-		void on_glyphTimeSlider_valueChanged(int value);
-		void on_autoResetCamera_toggled(bool on);
-		void timeout();
+        void on_glyphTime_valueChanged(int value);
+        void on_glyphTimeSlider_valueChanged(int value);
+        void on_autoResetCamera_toggled(bool on);
+        void timeout();
 
 };
 

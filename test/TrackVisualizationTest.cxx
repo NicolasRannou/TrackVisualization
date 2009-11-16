@@ -80,15 +80,6 @@ int main( int argc, char *argv[] )
   vtkRenderWindow *renWin = vtkRenderWindow::New();
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
 
-  bool tubesON = false;
-  if(argc >= 3)
-    {
-    if(strcmp(argv[2],"-tubesON") == 0)
-      {
-      tubesON = true;
-     }
-  }
-
   // Get the files which are in the folder "argv[1]"
   files = GetAllFiles (argv[1]);
 
@@ -167,24 +158,15 @@ int main( int argc, char *argv[] )
   QApplication app(argc, argv);
 
   TrackWidget window(NULL);
-/*
-  vtkWindowToImageFilter* w2if = vtkWindowToImageFilter::New();
-  w2if->SetInput(renWin);
 
-  vtkMPEG2Writer* mpegWriter = vtkMPEG2Writer::New();
-  mpegWriter->SetFileName("part2-1.mpg");
-  mpegWriter->SetInputConnection(w2if->GetOutputPort());
-  mpegWriter->Start();
-  mpegWriter->End();*/
-
-
-  //window.SetRenderWindow(renWin);
-  //window.SetRenderWindowInteractor(iren);
+  // insert base parameters
   window.SetRenderer(ren1);
   window.SetTotalTimeRange(totalTimeRange);
   window.SetEndTime(totalTimeRange);
   window.SetGlyphTime(totalTimeRange/2);
   window.SetRootNode(RootNode);
+
+  //configure widget for a good aspect when exec() called
   window.ConfigureWidget();
 
  //add tree root

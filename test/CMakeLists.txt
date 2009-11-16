@@ -45,6 +45,7 @@ SOURCE_GROUP("Generated" FILES
 ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
 SET_SOURCE_FILES_PROPERTIES(${SimpleViewSrcs} PROPERTIES
                             OBJECT_DEPENDS "${UISrcs}")
+                            
 
 # It's nice to have the ui in the windows project file...just double click on it
 # and designer comes up on that ui file :)
@@ -55,20 +56,20 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
   SET (SimpleViewSrcs ${SimpleViewSrcs} ${SimpleViewUI})
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
-ADD_EXECUTABLE( TrackWidget MACOSX_BUNDLE ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
-ADD_TEST( TrackWidgetTestWithPolydatas
-  ${EXECUTABLE_OUTPUT_PATH}/TrackWidget
-  ${TESTING_DATA_PATH}/
-)
+ADD_EXECUTABLE( TrackWidgetExe MACOSX_BUNDLE ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
 
-
-TARGET_LINK_LIBRARIES( TrackWidget
+TARGET_LINK_LIBRARIES( TrackWidgetExe
   QVTK
-  ${QT_LIBRARIES}
+  ${QT_LIBRARIES}  
   vtkRendering
   vtkGraphics
   vtkIO
   vtkCommon
   vtkInfovis
   vtkViews
+)
+
+ADD_TEST( LoadAndDisplayPolydatas
+  ${EXECUTABLE_OUTPUT_PATH}/TrackWidgetExe
+  ${TESTING_DATA_PATH}/
 )
