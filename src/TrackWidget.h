@@ -12,13 +12,13 @@
 #include "vtkSphereSource.h"
 #include "vtkCubeSource.h"
 
-#include <string.h>
-
 #include "TrackVisualization.h"
 
 #include "vtkWindowToImageFilter.h"
 
 #include <vtkFFMPEGWriter.h>
+
+
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
@@ -42,6 +42,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         bool m_TrackShape;
         int m_Begin, m_End, m_TotalTimeRange, m_GlyphTime;
         int m_Shape;
+        const char* m_FullFileName;
         const char* m_FileName;
         QTimer *m_InternalTimer;
         int m_VideoQuality;
@@ -58,6 +59,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
     private slots:
         void on_trackShape_activated ( int index );
         void on_glyphShape_activated ( int index );
+        void on_createFile_clicked();
         void on_startVideo_clicked();
         void on_endVideo_clicked();
         void on_begin_valueChanged(int value);

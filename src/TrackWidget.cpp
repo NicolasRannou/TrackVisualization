@@ -289,3 +289,13 @@ void TrackWidget::timeout()
   doubleComptor = (double)m_FrameComptor/(double)m_FrameRate;
   videoLength->setValue(doubleComptor);
   }
+
+void TrackWidget::on_createFile_clicked( )
+{
+  QString filename = QFileDialog::getSaveFileName(
+    this,
+    tr( "Folder to Save Video" ),videoName->text(),
+    0);
+
+  m_FullFileName = filename.toLatin1().data();
+}
