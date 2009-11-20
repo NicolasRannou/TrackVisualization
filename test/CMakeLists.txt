@@ -6,7 +6,10 @@ INCLUDE_DIRECTORIES(
 )
 
 # Set your files and resources here  
-SET(SimpleViewSrcs TrackVisualizationTest.cxx ${SOURCE_DATA_PATH}/TrackWidget.cpp)
+SET( SimpleViewSrcs 
+  TrackVisualizationTest.cxx 
+  ${SOURCE_DATA_PATH}/TrackWidget.cpp
+  )
 SET(SimpleViewUI ${SOURCE_DATA_PATH}/DesignerTrackWidget.ui)
 SET(SimpleViewHeaders ${SOURCE_DATA_PATH}/TrackWidget.h)
 
@@ -42,7 +45,9 @@ IF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
   SET (SimpleViewSrcs ${SimpleViewSrcs} ${SimpleViewUI})
 ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 
-ADD_EXECUTABLE( TrackWidgetExe MACOSX_BUNDLE ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
+ADD_EXECUTABLE( TrackWidgetExe 
+  MACOSX_BUNDLE 
+  ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
 
 TARGET_LINK_LIBRARIES( TrackWidgetExe
   QVTK
