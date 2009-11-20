@@ -12,16 +12,21 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
   m_VideoQuality = 1;
   m_FrameRate = 30;
   m_FrameComptor = 0;
-
-  m_FFMPEGWriter = vtkFFMPEGWriter::New();
   m_W2if = vtkWindowToImageFilter::New();
 
+
+#ifdef   USEFFMPEG
+  m_FFMPEGWriter = vtkFFMPEGWriter::New();
   connect( m_InternalTimer, SIGNAL(timeout()), SLOT(timeout()) );
+#endif
+
   }
 
 TrackWidget::~TrackWidget()
   {
+#ifdef   USEFFMPEG
   m_FFMPEGWriter->Delete();
+#endif
   m_W2if->Delete();
   }
 
@@ -72,20 +77,19 @@ void TrackWidget::on_glyphShape_activated ( int index )
   m_Shape = index;
   updateRenderingWindow();
   }
-
+#ifdef   USEFFMPEG
 void TrackWidget::on_startVideo_clicked()
   {
   m_W2if->SetInput(visualizationBox->GetRenderWindow());
-
   QByteArray convertToConstChar = videoName->text().toLatin1();
   m_FileName = convertToConstChar.data();
+
 
   m_FFMPEGWriter->SetFileName(m_FileName);
   m_FFMPEGWriter->SetQuality(m_VideoQuality);
   m_FFMPEGWriter->SetRate(m_FrameRate);
   m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
   m_FFMPEGWriter->Start();
-
 
   bool enablePushButtons = true;
   endVideo->setEnabled(enablePushButtons);
@@ -113,6 +117,18 @@ void TrackWidget::on_endVideo_clicked()
   m_InternalTimer->stop();
   m_FrameComptor = 0;
   }
+
+void TrackWidget::timeout()
+  {
+  visualizationBox->GetRenderWindow()->Render();
+  m_W2if->Modified();
+  m_FFMPEGWriter->Write();
+  m_FrameComptor++;
+  double doubleComptor;
+  doubleComptor = (double)m_FrameComptor/(double)m_FrameRate;
+  videoLength->setValue(doubleComptor);
+  }
+#endif
 
 void TrackWidget::on_begin_valueChanged(int value)
   {
@@ -277,17 +293,6 @@ void TrackWidget::ConfigureWidget()
 
   m_Renderer->ResetCamera();
   visualizationBox->update();
-  }
-
-void TrackWidget::timeout()
-  {
-  visualizationBox->GetRenderWindow()->Render();
-  m_W2if->Modified();
-  m_FFMPEGWriter->Write();
-  m_FrameComptor++;
-  double doubleComptor;
-  doubleComptor = (double)m_FrameComptor/(double)m_FrameRate;
-  videoLength->setValue(doubleComptor);
   }
 
 void TrackWidget::on_createFile_clicked( )

@@ -16,8 +16,9 @@
 
 #include "vtkWindowToImageFilter.h"
 
-#include <vtkFFMPEGWriter.h>
-
+#ifdef   USEFFMPEG
+ #include "vtkFFMPEGWriter.h"
+#endif
 
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
@@ -50,18 +51,21 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         int m_FrameComptor;
         bool m_AutoResetCamera;
         Lineage<TrackType>* m_RootNode;
+#ifdef   USEFFMPEG
         vtkFFMPEGWriter* m_FFMPEGWriter;
+#endif
         vtkWindowToImageFilter* m_W2if;
-
         void updateRenderingWindow();
-
 
     private slots:
         void on_trackShape_activated ( int index );
         void on_glyphShape_activated ( int index );
         void on_createFile_clicked();
+#ifdef   USEFFMPEG
         void on_startVideo_clicked();
         void on_endVideo_clicked();
+        void timeout();
+#endif
         void on_begin_valueChanged(int value);
         void on_end_valueChanged(int value);
         void on_totalTimeRange_valueChanged(int value);
@@ -70,7 +74,6 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         void on_glyphTime_valueChanged(int value);
         void on_glyphTimeSlider_valueChanged(int value);
         void on_autoResetCamera_toggled(bool on);
-        void timeout();
 
 };
 

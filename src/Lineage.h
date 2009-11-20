@@ -14,6 +14,7 @@ class Lineage
     typedef TTrack TrackType;
     typedef Lineage Self;
 
+
     /** \brief Constructor */
     Lineage( Self* iMother = 0, TrackType* iTrack = 0) : m_Mother( iMother ), 
       m_Daughter1( 0 ), m_Daughter2( 0 ), m_Track( iTrack )
