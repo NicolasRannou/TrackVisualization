@@ -16,10 +16,14 @@
 
 #include "vtkWindowToImageFilter.h"
 
+#include <iostream>
+#include <string>
+using namespace std;
+
+
 #ifdef   USEFFMPEG
  #include "vtkFFMPEGWriter.h"
 #endif
-
 
 class TrackWidget : public QWidget, private Ui::TrackWidget
 {
@@ -43,8 +47,8 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         bool m_TrackShape;
         int m_Begin, m_End, m_TotalTimeRange, m_GlyphTime;
         int m_Shape;
-        const char* m_FullFileName;
-        const char* m_FileName;
+        std::string m_FullFileName;
+        std::string m_FileName;
         QTimer *m_InternalTimer;
         int m_VideoQuality;
         int m_FrameRate;

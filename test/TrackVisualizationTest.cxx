@@ -16,7 +16,6 @@
 #include <dirent.h>
 #include <iostream>
 
-#include <string.h>
 #include <vtkstd/vector>
 #include <vtkstd/map>
 #include <string>
@@ -97,7 +96,6 @@ int main( int argc, char *argv[] )
     }
 
   // PARAMETERS
-  
 
   // totalTimeRange : to be defined for a good color repartition
   // trackTimeRange : to display the tracks which contains points in the chosen time range

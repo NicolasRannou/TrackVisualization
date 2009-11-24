@@ -61,6 +61,6 @@ TARGET_LINK_LIBRARIES( TrackWidgetExe
 )
 
 ADD_TEST( LoadAndDisplayPolydatas
-  ${EXECUTABLE_OUTPUT_PATH}/TrackWidgetExe
-  ${TESTING_DATA_PATH}/
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TrackWidgetExe
+  ${TESTING_DATA_PATH}
 )

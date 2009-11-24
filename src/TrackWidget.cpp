@@ -9,11 +9,10 @@ TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
   m_InternalTimer = new QTimer( this );
   m_AutoResetCamera = true;
   m_FileName = "video_name";
-  m_VideoQuality = 1;
+  m_FullFileName = "video_name";
   m_FrameRate = 30;
   m_FrameComptor = 0;
   m_W2if = vtkWindowToImageFilter::New();
-
 
 #ifdef   USEFFMPEG
   m_FFMPEGWriter = vtkFFMPEGWriter::New();
@@ -81,11 +80,10 @@ void TrackWidget::on_glyphShape_activated ( int index )
 void TrackWidget::on_startVideo_clicked()
   {
   m_W2if->SetInput(visualizationBox->GetRenderWindow());
-  QByteArray convertToConstChar = videoName->text().toLatin1();
-  m_FileName = convertToConstChar.data();
 
+  m_FileName = videoName->text().toStdString();
 
-  m_FFMPEGWriter->SetFileName(m_FileName);
+  m_FFMPEGWriter->SetFileName(m_FullFileName.c_str());
   m_FFMPEGWriter->SetQuality(m_VideoQuality);
   m_FFMPEGWriter->SetRate(m_FrameRate);
   m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
@@ -145,7 +143,7 @@ void TrackWidget::on_begin_valueChanged(int value)
       if( value <= m_End )
         {
         m_Begin = value;
-        glyphTimeSlider->setMinValue(value);
+        glyphTimeSlider->setMinValue(value);QFileDialog
         updateRenderingWindow();
         }
       else
@@ -270,6 +268,7 @@ void TrackWidget::updateRenderingWindow()
     {
     m_Renderer->ResetCamera();
     }
+
   visualizationBox->update();
   }
 
@@ -297,10 +296,9 @@ void TrackWidget::ConfigureWidget()
 
 void TrackWidget::on_createFile_clicked( )
 {
-  QString filename = QFileDialog::getSaveFileName(
+    QString filename = QFileDialog::getSaveFileName(
     this,
     tr( "Folder to Save Video" ),videoName->text(),
     0);
-
-  m_FullFileName = filename.toLatin1().data();
+    m_FullFileName = filename.toStdString();
 }
