@@ -1,87 +1,109 @@
 #include "TrackWidget.h"
 
-TrackWidget::TrackWidget(QWidget *parent) : QWidget(parent)
-  {
-  setupUi(this);
-  m_Shape = 0;
-  m_TrackShape = false;
-  m_Begin = 0, m_End = 0, m_TotalTimeRange = 0, m_GlyphTime = 0;
+#include "vtkSphereSource.h"
+#include "vtkCubeSource.h"
+#include "vtkWindowToImageFilter.h"
+#include "vtkPolyData.h"
+#include "vtkRenderer.h"
+
+#include "TrackVisualization.h"
+
+#ifdef   USEFFMPEG
+ #include "vtkFFMPEGWriter.h"
+#endif
+
+TrackWidget::
+TrackWidget(QWidget *parent) :
+  QWidget(parent), m_TrackShape( false ),   m_Begin( 0 ), m_End( 0 ),
+  m_TotalTimeRange( 0 ), m_GlyphTime( 0 ), m_Shape( 0 ),
+  m_FullFileName( "video_name" ), m_FileName( "video_name" ),
+  m_VideoQuality( 1 ), m_FrameRate( 30 ), m_FrameCounter( 0 ),
+  m_AutoResetCamera( true )
+{
+  this->setupUi(this);
   m_InternalTimer = new QTimer( this );
-  m_AutoResetCamera = true;
-  m_FileName = "video_name";
-  m_FullFileName = "video_name";
-  m_FrameRate = 30;
-  m_FrameComptor = 0;
+
   m_W2if = vtkWindowToImageFilter::New();
 
 #ifdef   USEFFMPEG
   m_FFMPEGWriter = vtkFFMPEGWriter::New();
-  connect( m_InternalTimer, SIGNAL(timeout()), SLOT(timeout()) );
+  QObject::connect( m_InternalTimer, SIGNAL(timeout()),
+    this, SLOT(timeout()) );
 #endif
+}
 
-  }
-
-TrackWidget::~TrackWidget()
-  {
+TrackWidget::
+~TrackWidget()
+{
 #ifdef   USEFFMPEG
   m_FFMPEGWriter->Delete();
 #endif
   m_W2if->Delete();
-  }
+}
 
-void TrackWidget::SetRenderer(vtkRenderer *renderer)
-  {
+void
+TrackWidget::
+SetRenderer(vtkRenderer *renderer)
+{
   m_Renderer = renderer;
-  visualizationBox-> GetRenderWindow()-> AddRenderer(this->m_Renderer);
-  }
+  this->visualizationBox->GetRenderWindow()->AddRenderer(m_Renderer);
+}
 
-void TrackWidget::SetTotalTimeRange(int value)
-  {
+void
+TrackWidget::
+SetTotalTimeRange(const int& value)
+{
   m_TotalTimeRange = value;
   totalTimeRange->setValue(value);
-  }
+}
 
-void TrackWidget::SetEndTime(int value)
-  {
+void
+TrackWidget::
+SetEndTime(const int& value)
+{
   m_End = value;
   end->setValue(value);
-  }
+}
 
-void TrackWidget::SetGlyphTime(int value)
-  {
+void
+TrackWidget::
+SetGlyphTime(const int& value)
+{
   m_GlyphTime = value;
   glyphTime->setValue(value);
-  }
+}
 
-void TrackWidget::SetRootNode(Lineage<TrackType> * root)
-  {
+void
+TrackWidget::
+SetRootNode(Lineage<TrackType> * root)
+{
   m_RootNode = root;
-  }
+}
 
-void TrackWidget::on_trackShape_activated ( int index )
-  {
-  if(index == 0)
-    {
-    m_TrackShape = false;
-    }
-  else
-    {
-    m_TrackShape = true;
-    }
+void
+TrackWidget::
+on_trackShape_activated ( int index )
+{
+  m_TrackShape = ( index != 0 );
   updateRenderingWindow();
-  }
+}
 
-void TrackWidget::on_glyphShape_activated ( int index )
-  {
+void
+TrackWidget::
+on_glyphShape_activated ( int index )
+{
   m_Shape = index;
   updateRenderingWindow();
-  }
-#ifdef   USEFFMPEG
-void TrackWidget::on_startVideo_clicked()
-  {
-  m_W2if->SetInput(visualizationBox->GetRenderWindow());
+}
 
-  m_FileName = videoName->text().toStdString();
+#ifdef   USEFFMPEG
+void
+TrackWidget::
+on_startVideo_clicked()
+{
+  m_W2if->SetInput(this->visualizationBox->GetRenderWindow());
+
+  m_FileName = this->videoName->text().toStdString();
 
   m_FFMPEGWriter->SetFileName(m_FullFileName.c_str());
   m_FFMPEGWriter->SetQuality(m_VideoQuality);
@@ -89,53 +111,56 @@ void TrackWidget::on_startVideo_clicked()
   m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
   m_FFMPEGWriter->Start();
 
-  bool enablePushButtons = true;
-  endVideo->setEnabled(enablePushButtons);
-  enablePushButtons = false;
-  startVideo->setEnabled(enablePushButtons);
-  videoName->setEnabled(enablePushButtons);
-  frameRate->setEnabled(enablePushButtons);
-  videoQuality->setEnabled(enablePushButtons);
+  this->endVideo->setEnabled(true);
+
+  startVideo->setEnabled(false);
+  videoName->setEnabled(false);
+  frameRate->setEnabled(false);
+  videoQuality->setEnabled(false);
 
   m_InternalTimer->start( 1000/m_FrameRate );
-  }
+}
 
-void TrackWidget::on_endVideo_clicked()
-  {
+void
+TrackWidget::
+on_endVideo_clicked()
+{
   m_FFMPEGWriter->End();
 
-  bool enablePushButtons = false;
-  endVideo->setEnabled(enablePushButtons);
-  enablePushButtons = true;
-  startVideo->setEnabled(enablePushButtons);
-  videoName->setEnabled(enablePushButtons);
-  frameRate->setEnabled(enablePushButtons);
-  videoQuality->setEnabled(enablePushButtons);
+  this->endVideo->setEnabled(false);
+
+  this->startVideo->setEnabled(true);
+  this->videoName->setEnabled(true);
+  this->frameRate->setEnabled(true);
+  this->videoQuality->setEnabled(true);
 
   m_InternalTimer->stop();
-  m_FrameComptor = 0;
-  }
+  m_FrameCounter = 0;
+}
 
-void TrackWidget::timeout()
-  {
-  visualizationBox->GetRenderWindow()->Render();
+void
+TrackWidget::
+timeout()
+{
   m_W2if->Modified();
   m_FFMPEGWriter->Write();
-  m_FrameComptor++;
-  double doubleComptor;
-  doubleComptor = (double)m_FrameComptor/(double)m_FrameRate;
-  videoLength->setValue(doubleComptor);
-  }
+  ++m_FrameCounter;
+  double doubleCounter;
+  doubleCounter = (double)m_FrameCounter/(double)m_FrameRate;
+  videoLength->setValue(doubleCounter);
+}
 #endif
 
-void TrackWidget::on_begin_valueChanged(int value)
-  {
+void
+TrackWidget::
+on_begin_valueChanged(int value)
+{
   if( value != m_Begin )
     {
     if( value < m_Begin )
       {
       m_Begin = value;
-      glyphTimeSlider->setMinValue(value);
+      this->glyphTimeSlider->setMinValue(value);
       updateRenderingWindow();
       }
     else
@@ -143,56 +168,64 @@ void TrackWidget::on_begin_valueChanged(int value)
       if( value <= m_End )
         {
         m_Begin = value;
-        glyphTimeSlider->setMinValue(value);QFileDialog
+        this->glyphTimeSlider->setMinValue(value);
         updateRenderingWindow();
         }
       else
         {
-        begin->setValue(m_End);
+        this->begin->setValue(m_End);
         }
       }
     }
-  }
+}
 
-void TrackWidget::on_end_valueChanged(int value)
-  {
+void
+TrackWidget::
+on_end_valueChanged(int value)
+{
   if( value != m_End )
     {
     if( value > m_End )
       {
       m_End = value;
-      glyphTimeSlider->setMaxValue(value);
+      this->glyphTimeSlider->setMaxValue(value);
       updateRenderingWindow();
       }
     else
       {
       if( value >= m_Begin )
         {
-    	m_End = value;
-    	updateRenderingWindow();
-    	glyphTimeSlider->setMaxValue(value);
+        m_End = value;
+        updateRenderingWindow();
+        this->glyphTimeSlider->setMaxValue(value);
         }
       else
         {
-    	end->setValue(m_Begin);
+        this->end->setValue(m_Begin);
         }
       }
     }
   else
-    glyphTimeSlider->setMaxValue(value);
-  }
+    {
+    this->glyphTimeSlider->setMaxValue(value);
+    }
+}
 
-void TrackWidget::on_totalTimeRange_valueChanged(int value)
-  {
-  if( value != m_TotalTimeRange && value > 0 )
+void
+TrackWidget::
+on_totalTimeRange_valueChanged(int value)
+{
+  if( (value != m_TotalTimeRange) && (value > 0) )
     {
     m_TotalTimeRange = value;
     updateRenderingWindow();
     }
-  }
+}
 
-void TrackWidget::on_glyphTime_valueChanged(int value)
-  {
+void
+TrackWidget::
+on_glyphTime_valueChanged(int value)
+{
   if( value != m_GlyphTime )
     {
     if( value <= m_End && value >= m_Begin)
@@ -203,15 +236,21 @@ void TrackWidget::on_glyphTime_valueChanged(int value)
     else
       {
       if(value > m_End)
+        {
         glyphTime->setValue(m_End);
+        }
       else
+        {
         glyphTime->setValue(m_Begin);
+        }
       }
     }
-  }
+}
 
-void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
-  {
+void
+TrackWidget::
+on_glyphTimeSlider_valueChanged(int value)
+{
   if( value != m_GlyphTime )
     {
     if( value <= m_End && value >= m_Begin)
@@ -224,61 +263,71 @@ void TrackWidget::on_glyphTimeSlider_valueChanged(int value)
       glyphTime->setValue(m_End);
       }
     }
-  }
+}
 
-void TrackWidget::on_videoQuality_valueChanged(int value)
-  {
-    m_VideoQuality = value;
-  }
+void
+TrackWidget::
+on_videoQuality_valueChanged(int value)
+{
+  m_VideoQuality = value;
+}
 
-void TrackWidget::on_frameRate_valueChanged(int value)
-  {
+void
+TrackWidget::
+on_frameRate_valueChanged(int value)
+{
   m_FrameRate = value;
-  }
+}
 
-void TrackWidget::updateRenderingWindow()
-  {
+void
+TrackWidget::
+updateRenderingWindow()
+{
   double * trackTimeRange = new double[2];
   trackTimeRange[0] = m_Begin;
   trackTimeRange[1] = m_End;
 
-    if(m_Shape == 0)
-      {
-      vtkSphereSource *sphereShape = vtkSphereSource::New();
-      sphereShape->SetRadius(0.1);
+  if(m_Shape == 0)
+    {
+    vtkSphereSource *sphereShape = vtkSphereSource::New();
+    sphereShape->SetRadius(0.1);
 
-      PlotTracksTemplate<TrackType, vtkSphereSource >(m_Renderer, m_RootNode, sphereShape, m_TrackShape,
-        m_TotalTimeRange, trackTimeRange, m_GlyphTime);
-      sphereShape->Delete();
-      }
+    PlotTracksTemplate<TrackType, vtkSphereSource >(m_Renderer, m_RootNode, sphereShape, m_TrackShape,
+      m_TotalTimeRange, trackTimeRange, m_GlyphTime);
+    sphereShape->Delete();
+    }
 
-    if(m_Shape == 1)
-      {
-      vtkCubeSource *cubeShape = vtkCubeSource::New();
-      cubeShape->SetXLength(0.2);
-      cubeShape->SetYLength(0.2);
-      cubeShape->SetZLength(0.2);
+  if(m_Shape == 1)
+    {
+    vtkCubeSource *cubeShape = vtkCubeSource::New();
+    cubeShape->SetXLength(0.2);
+    cubeShape->SetYLength(0.2);
+    cubeShape->SetZLength(0.2);
 
-      PlotTracksTemplate<TrackType, vtkCubeSource >(m_Renderer, m_RootNode, cubeShape, m_TrackShape,
-        m_TotalTimeRange, trackTimeRange, m_GlyphTime);
-      cubeShape->Delete();
-      }
+    PlotTracksTemplate<TrackType, vtkCubeSource >(m_Renderer, m_RootNode, cubeShape, m_TrackShape,
+      m_TotalTimeRange, trackTimeRange, m_GlyphTime);
+    cubeShape->Delete();
+    }
 
   if(m_AutoResetCamera)
     {
     m_Renderer->ResetCamera();
     }
 
-  visualizationBox->update();
+  this->visualizationBox->update();
   }
 
-void TrackWidget::on_autoResetCamera_toggled(bool on)
-  {
+void
+TrackWidget::
+on_autoResetCamera_toggled(bool on)
+{
   m_AutoResetCamera = on;
-  }
+}
 
-void TrackWidget::ConfigureWidget()
-  {
+void
+TrackWidget::
+ConfigureWidget()
+{
   double * trackTimeRange = new double[2];
   trackTimeRange[0] = m_Begin;
   trackTimeRange[1] = m_End;
@@ -292,13 +341,14 @@ void TrackWidget::ConfigureWidget()
 
   m_Renderer->ResetCamera();
   visualizationBox->update();
-  }
+}
 
-void TrackWidget::on_createFile_clicked( )
+void
+TrackWidget::
+on_createFile_clicked( )
 {
-    QString filename = QFileDialog::getSaveFileName(
-    this,
-    tr( "Folder to Save Video" ),videoName->text(),
-    0);
-    m_FullFileName = filename.toStdString();
+  QString filename =
+    QFileDialog::getSaveFileName( this,
+      tr( "Folder to Save Video" ), videoName->text(), 0 );
+  m_FullFileName = filename.toStdString();
 }

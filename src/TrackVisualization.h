@@ -1,5 +1,5 @@
-#ifndef _TRACKVISUALIZATION_H
-#define _TRACKVISUALIZATION_H
+#ifndef __TRACKVISUALIZATION_H
+#define __TRACKVISUALIZATION_H
 
 #include "vtkPoints.h"
 
