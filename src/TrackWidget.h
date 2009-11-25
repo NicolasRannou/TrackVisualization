@@ -14,6 +14,8 @@
 class vtkFFMPEGWriter;
 #endif
 
+class vtkFFMPEGRenderWindowRecorder;
+
 class vtkPolyData;
 class vtkWindowToImageFilter;
 class vtkRenderer;
@@ -54,6 +56,7 @@ class TrackWidget : public QWidget, private Ui::TrackWidget
         Lineage<TrackType>* m_RootNode;
 #ifdef   USEFFMPEG
         vtkFFMPEGWriter* m_FFMPEGWriter;
+        vtkFFMPEGRenderWindowRecorder* m_FFMPEGRecorder;
 #endif
         vtkWindowToImageFilter* m_W2if;
 

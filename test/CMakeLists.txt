@@ -9,9 +9,23 @@ INCLUDE_DIRECTORIES(
 SET( SimpleViewSrcs 
   TrackVisualizationTest.cxx 
   ${SOURCE_DATA_PATH}/TrackWidget.cpp
+  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.cxx
   )
+  
+SET( vtkFFMPEGRenderWindowRecorderTestSources 
+  vtkFFMPEGRenderWindowRecorderTest.cxx
+  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.cxx
+  )  
+
+SET(vtkFFMPEGRenderWindowRecorderTestHeaders
+  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.h
+  )
+  
 SET(SimpleViewUI ${SOURCE_DATA_PATH}/DesignerTrackWidget.ui)
-SET(SimpleViewHeaders ${SOURCE_DATA_PATH}/TrackWidget.h)
+SET(SimpleViewHeaders 
+  ${SOURCE_DATA_PATH}/TrackWidget.h
+  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.h
+  )
 
 # The rest should just work (sure...)
 QT4_WRAP_UI(UISrcs ${SimpleViewUI})
@@ -48,7 +62,7 @@ ENDIF (${CMAKE_BUILD_TOOL} MATCHES "devenv")
 ADD_EXECUTABLE( TrackWidgetExe 
   MACOSX_BUNDLE 
   ${SimpleViewSrcs} ${UISrcs} ${MOCSrcs} ${ResourceSrcs})
-
+  
 TARGET_LINK_LIBRARIES( TrackWidgetExe
   QVTK
   ${QT_LIBRARIES}  
@@ -59,8 +73,25 @@ TARGET_LINK_LIBRARIES( TrackWidgetExe
   vtkInfovis
   vtkViews
 )
+  
+ADD_EXECUTABLE( vtkFFMPEGRenderWindowRecorderTestExe 
+  MACOSX_BUNDLE 
+  ${vtkFFMPEGRenderWindowRecorderTestSources})
 
-ADD_TEST( LoadAndDisplayPolydatas
-  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TrackWidgetExe
-  ${TESTING_DATA_PATH}
+TARGET_LINK_LIBRARIES( vtkFFMPEGRenderWindowRecorderTestExe
+  vtkRendering
+  vtkGraphics
+  vtkIO
+  vtkCommon
+  vtkInfovis
+  vtkViews
+)
+
+#ADD_TEST( LoadAndDisplayPolydatas
+#  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/TrackWidgetExe
+#  ${TESTING_DATA_PATH}
+#)
+
+ADD_TEST( vtkFFMPEGRenderWindowRecorderTestExe
+  ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTestExe
 )

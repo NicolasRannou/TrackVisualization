@@ -6,6 +6,8 @@
 #include "vtkPolyData.h"
 #include "vtkRenderer.h"
 
+#include "vtkFFMPEGRenderWindowRecorder.h"
+
 #include "TrackVisualization.h"
 
 #ifdef   USEFFMPEG
@@ -22,11 +24,11 @@ TrackWidget(QWidget *parent) :
 {
   this->setupUi(this);
   m_InternalTimer = new QTimer( this );
-
   m_W2if = vtkWindowToImageFilter::New();
 
 #ifdef   USEFFMPEG
   m_FFMPEGWriter = vtkFFMPEGWriter::New();
+  m_FFMPEGRecorder = vtkFFMPEGRenderWindowRecorder::New();
   QObject::connect( m_InternalTimer, SIGNAL(timeout()),
     this, SLOT(timeout()) );
 #endif
@@ -37,6 +39,7 @@ TrackWidget::
 {
 #ifdef   USEFFMPEG
   m_FFMPEGWriter->Delete();
+  m_FFMPEGRecorder->Delete();
 #endif
   m_W2if->Delete();
 }
@@ -108,6 +111,14 @@ on_startVideo_clicked()
   m_FFMPEGWriter->SetFileName(m_FullFileName.c_str());
   m_FFMPEGWriter->SetQuality(m_VideoQuality);
   m_FFMPEGWriter->SetRate(m_FrameRate);
+
+  m_FFMPEGRecorder->SetFileName("GOFIGURE");
+  m_FFMPEGRecorder->Setm_VideoQuality(1);
+  m_FFMPEGRecorder->Setm_FrameRate(30);
+
+  m_FFMPEGRecorder->StartCapture();
+  //m_FFMPEGRecorder->SetRenderWindow(this->visualizationBox->GetRenderWindow());
+
   m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
   m_FFMPEGWriter->Start();
 
@@ -127,6 +138,8 @@ on_endVideo_clicked()
 {
   m_FFMPEGWriter->End();
 
+  m_FFMPEGRecorder->EndCapture();
+
   this->endVideo->setEnabled(false);
 
   this->startVideo->setEnabled(true);
@@ -144,6 +157,9 @@ timeout()
 {
   m_W2if->Modified();
   m_FFMPEGWriter->Write();
+
+  m_FFMPEGRecorder->TakeSnapshot();
+
   ++m_FrameCounter;
   double doubleCounter;
   doubleCounter = (double)m_FrameCounter/(double)m_FrameRate;
@@ -315,6 +331,7 @@ updateRenderingWindow()
     }
 
   this->visualizationBox->update();
+  delete trackTimeRange;
   }
 
 void
@@ -341,6 +358,8 @@ ConfigureWidget()
 
   m_Renderer->ResetCamera();
   visualizationBox->update();
+
+  delete trackTimeRange;
 }
 
 void
