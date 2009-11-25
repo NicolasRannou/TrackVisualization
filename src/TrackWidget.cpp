@@ -116,8 +116,9 @@ on_startVideo_clicked()
   m_FFMPEGRecorder->Setm_VideoQuality(1);
   m_FFMPEGRecorder->Setm_FrameRate(30);
 
+  m_FFMPEGRecorder->SetRenderWindow(this->visualizationBox->GetRenderWindow());
   m_FFMPEGRecorder->StartCapture();
-  //m_FFMPEGRecorder->SetRenderWindow(this->visualizationBox->GetRenderWindow());
+
 
   m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
   m_FFMPEGWriter->Start();

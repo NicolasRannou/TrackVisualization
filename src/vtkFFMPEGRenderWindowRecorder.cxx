@@ -64,9 +64,6 @@ void
 vtkFFMPEGRenderWindowRecorder::
 StartCapture()
 {
-
-	cout<< "FileName: " << m_FileName << endl;
-
 	m_ImageWriter->SetFileName(m_FileName.c_str());
 	m_ImageWriter->SetQuality(m_VideoQuality);
 	m_ImageWriter->SetRate(m_FrameRate);

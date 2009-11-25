@@ -46,8 +46,8 @@ int main ()
 
   vtkFFMPEGRenderWindowRecorder *testRecorder = vtkFFMPEGRenderWindowRecorder::New();
   testRecorder->SetRenderWindow(renWin);
-  testRecorder->StartCapture();
   testRecorder->SetFileName("RecordingTest");
+  testRecorder->StartCapture();
 
   for (int i = 0; i < 100; i ++)
     {
