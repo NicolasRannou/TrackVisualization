@@ -7,7 +7,6 @@
 #include "vtkRenderer.h"
 
 #include "vtkFFMPEGRenderWindowRecorder.h"
-
 #include "TrackVisualization.h"
 
 #ifdef   USEFFMPEG

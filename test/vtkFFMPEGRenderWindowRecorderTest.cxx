@@ -5,12 +5,21 @@
 #include "vtkRenderWindow.h"
 #include "vtkRenderer.h"
 #include "vtkRenderWindowInteractor.h"
+#include "vtkProperty.h"
 
-//For the test
+//For the testcoordinates geometry, properties, transformation
 #include "vtkFFMPEGRenderWindowRecorder.h"
 
-int main ()
+#include <stdio.h>
+
+int main( int argc, char* argv[] )
 {
+  if( argc != 2 )
+    {
+    std::cerr <<"Usage: " <<std::endl;
+    std::cerr <<"" <<std::endl;
+    return EXIT_FAILURE;
+    }
 
   // create sphere geometry
   vtkSphereSource *sphere = vtkSphereSource::New();
@@ -22,9 +31,11 @@ int main ()
   vtkPolyDataMapper *map = vtkPolyDataMapper::New();
   map->SetInput(sphere->GetOutput());
 
-  // actor coordinates geometry, properties, transformation
+  // actor creation and properties definition
   vtkActor *aSphere = vtkActor::New();
   aSphere->SetMapper(map);
+  aSphere->GetProperty()->SetColor(0,0,1);
+  aSphere->GetProperty()->SetOpacity(0.5);
   //aSphere->GetProperty()->SetColor(0,0,1); // sphere color blue
 
   // a renderer and render window
@@ -35,18 +46,16 @@ int main ()
   // an interactor
   vtkRenderWindowInteractor *iren = vtkRenderWindowInteractor::New();
   iren->SetRenderWindow(renWin);
-
   iren->Initialize();
 
   // add the actor to the scene
   ren1->AddActor(aSphere);
-  ren1->SetBackground(1,1,1); // Background color white
+  ren1->SetBackground(1,0,0); // Background color white
 
-  // render an image (lights and cameras are created automatically)
-
+  // create the video
   vtkFFMPEGRenderWindowRecorder *testRecorder = vtkFFMPEGRenderWindowRecorder::New();
   testRecorder->SetRenderWindow(renWin);
-  testRecorder->SetFileName("RecordingTest");
+  testRecorder->SetFileName( argv[1] );
   testRecorder->StartCapture();
 
   for (int i = 0; i < 100; i ++)
@@ -57,4 +66,8 @@ int main ()
 
   testRecorder->EndCapture();
 
+  // remove the video
+  //remove( "RecordingTest" );
+
+  return EXIT_SUCCESS;
 }

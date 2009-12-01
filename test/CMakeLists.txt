@@ -24,7 +24,6 @@ SET(vtkFFMPEGRenderWindowRecorderTestHeaders
 SET(SimpleViewUI ${SOURCE_DATA_PATH}/DesignerTrackWidget.ui)
 SET(SimpleViewHeaders 
   ${SOURCE_DATA_PATH}/TrackWidget.h
-  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.h
   )
 
 # The rest should just work (sure...)
@@ -74,11 +73,10 @@ TARGET_LINK_LIBRARIES( TrackWidgetExe
   vtkViews
 )
   
-ADD_EXECUTABLE( vtkFFMPEGRenderWindowRecorderTestExe 
-  MACOSX_BUNDLE 
+ADD_EXECUTABLE( vtkFFMPEGRenderWindowRecorderTest 
   ${vtkFFMPEGRenderWindowRecorderTestSources})
 
-TARGET_LINK_LIBRARIES( vtkFFMPEGRenderWindowRecorderTestExe
+TARGET_LINK_LIBRARIES( vtkFFMPEGRenderWindowRecorderTest
   vtkRendering
   vtkGraphics
   vtkIO
@@ -94,4 +92,6 @@ TARGET_LINK_LIBRARIES( vtkFFMPEGRenderWindowRecorderTestExe
 
 ADD_TEST( vtkFFMPEGRenderWindowRecorderTestExe
   ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vtkFFMPEGRenderWindowRecorderTestExe
+  RecordingTest.avi
 )
+

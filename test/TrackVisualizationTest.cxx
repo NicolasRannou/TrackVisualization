@@ -54,7 +54,7 @@ char **GetAllFiles (const char *path);
 int NumberOfFiles (const char *path);
 
 // Returns the polyData contained in the target folder
-vtkPolyData * loadPolyData(int i,char * path,char * fileName);
+vtkPolyData * loadPolyData(char * path,char * fileName);
 
 // Get the extension of the target file
 const char* getFileExtension(const string& file);
@@ -91,7 +91,7 @@ int main( int argc, char *argv[] )
     {
     if(strcmp(getFileExtension(files[i]),".vtk") == 0)
       {
-      polyDataList.push_back(loadPolyData(i,argv[1],files[i]));
+      polyDataList.push_back(loadPolyData(argv[1],files[i]));
       }
     }
 
@@ -104,7 +104,6 @@ int main( int argc, char *argv[] )
   double * trackTimeRange = new double[2];
   trackTimeRange[0] = 0;
   trackTimeRange[1] = 60;
-  double glyphTime = 30;
 
   // Tree creation with a map <polydata,time>
   typedef vtkstd::map<double, vtkPolyData*> TrackType;
@@ -268,7 +267,7 @@ int NumberOfFiles (const char *path)
   }
 
 //**************************************************************************//
-vtkPolyData * loadPolyData(int i,char * path,char * fileName)
+vtkPolyData * loadPolyData(char * path,char * fileName)
   {
 
   char str[100];
@@ -295,11 +294,11 @@ const char* getFileExtension(const string& file)
   string ext = "";
   const char* p;
 
-  for(int i=0; i<str.length(); i++)
+  for(unsigned int i=0; i<str.length(); i++)
     {
     if(str[i] == '.')
       {
-      for(int j = i; j<str.length(); j++)
+      for(unsigned int j = i; j<str.length(); j++)
         {
         ext += str[j];
         }

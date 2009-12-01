@@ -7,16 +7,22 @@
 #include "vtkGraphicsFactory.h"
 #include "vtkDebugLeaks.h"
 
+//-----------------------------------------------------------
+// constructor
+//
 vtkFFMPEGRenderWindowRecorder::
 vtkFFMPEGRenderWindowRecorder() :
   m_FrameRate (30), m_VideoQuality (1),
-  m_ControlIfVideoStarted (false), m_FileName("goFigure2")
+  m_FileName("goFigure2"), m_ControlIfVideoStarted (false)
 {
 	m_RenderWindow = vtkRenderWindow::New();
 	m_ImageFilter  = vtkWindowToImageFilter::New();
 	m_ImageWriter  = vtkFFMPEGWriter::New();
 }
 
+//-----------------------------------------------------------
+// destructor
+//
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
@@ -25,6 +31,9 @@ vtkFFMPEGRenderWindowRecorder::
 	m_ImageWriter ->Delete();
 }
 
+//-----------------------------------------------------------
+// create a new vtkObject from the constructor
+//
 vtkFFMPEGRenderWindowRecorder*
 vtkFFMPEGRenderWindowRecorder::
 New()
@@ -42,7 +51,9 @@ New()
   return new vtkFFMPEGRenderWindowRecorder;
 }
 
-
+//-----------------------------------------------------------
+// set the name of the video (can be a path)
+//
 void
 vtkFFMPEGRenderWindowRecorder::
 SetFileName( const std::string& iFileName)
@@ -50,6 +61,9 @@ SetFileName( const std::string& iFileName)
 	m_FileName = iFileName;
 }
 
+//-----------------------------------------------------------
+// set the render window to be observed
+//
 void
 vtkFFMPEGRenderWindowRecorder::
 SetRenderWindow( vtkRenderWindow* iRenderWindow)
@@ -60,6 +74,9 @@ SetRenderWindow( vtkRenderWindow* iRenderWindow)
 	m_ImageWriter->SetInput(m_ImageFilter->GetOutput());
 }
 
+//-----------------------------------------------------------
+// start the video acquisition
+//
 void
 vtkFFMPEGRenderWindowRecorder::
 StartCapture()
@@ -75,6 +92,9 @@ StartCapture()
 		}
 }
 
+//-----------------------------------------------------------
+// end the video acquisition
+//
 void
 vtkFFMPEGRenderWindowRecorder::
 EndCapture()
@@ -86,6 +106,9 @@ EndCapture()
 	  }
 }
 
+//-----------------------------------------------------------
+// take a snapshot of the current render window
+//
 void
 vtkFFMPEGRenderWindowRecorder::
 TakeSnapshot()
