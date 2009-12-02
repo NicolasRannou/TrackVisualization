@@ -4,8 +4,9 @@
 #include "vtkWindowToImageFilter.h"
 #include "vtkFFMPEGWriter.h"
 
-#include "vtkGraphicsFactory.h"
+#include "vtkObjectFactory.h"
 #include "vtkDebugLeaks.h"
+
 
 //-----------------------------------------------------------
 // constructor
@@ -15,7 +16,6 @@ vtkFFMPEGRenderWindowRecorder() :
   m_FrameRate (30), m_VideoQuality (1),
   m_FileName("goFigure2"), m_ControlIfVideoStarted (false)
 {
-	m_RenderWindow = vtkRenderWindow::New();
 	m_ImageFilter  = vtkWindowToImageFilter::New();
 	m_ImageWriter  = vtkFFMPEGWriter::New();
 }
@@ -26,9 +26,14 @@ vtkFFMPEGRenderWindowRecorder() :
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
-	m_RenderWindow->Delete();
-	m_ImageFilter ->Delete();
-	m_ImageWriter ->Delete();
+  if(m_ImageFilter != NULL)
+  	{
+	  m_ImageFilter ->Delete();
+  	}
+	if(m_ImageWriter != NULL)
+		{
+    m_ImageWriter ->Delete();
+		}
 }
 
 //-----------------------------------------------------------
@@ -40,16 +45,16 @@ New()
 {
   // First try to create the object from the vtkObjectFactory
   vtkObject* ret =
-    vtkGraphicsFactory::CreateInstance("vtkFFMPEGRenderWindowRecorder");
+    vtkObjectFactory::CreateInstance("vtkFFMPEGRenderWindowRecorder");
   if ( ret )
     {
     return static_cast<vtkFFMPEGRenderWindowRecorder *>(ret);
     }
-#ifdef VTK_DEBUG_LEAKS
-  vtkDebugLeaks::ConstructClass("vtkFFMPEGRenderWindowRecorder");
-#endif
+
   return new vtkFFMPEGRenderWindowRecorder;
 }
+
+
 
 //-----------------------------------------------------------
 // set the name of the video (can be a path)
@@ -66,7 +71,7 @@ SetFileName( const std::string& iFileName)
 //
 void
 vtkFFMPEGRenderWindowRecorder::
-SetRenderWindow( vtkRenderWindow* iRenderWindow)
+SetRenderingWindow( vtkRenderWindow* iRenderWindow)
 {
 	m_RenderWindow = iRenderWindow;
 

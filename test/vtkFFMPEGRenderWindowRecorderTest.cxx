@@ -7,7 +7,6 @@
 #include "vtkRenderWindowInteractor.h"
 #include "vtkProperty.h"
 
-//For the testcoordinates geometry, properties, transformation
 #include "vtkFFMPEGRenderWindowRecorder.h"
 
 #include <stdio.h>
@@ -34,9 +33,8 @@ int main( int argc, char* argv[] )
   // actor creation and properties definition
   vtkActor *aSphere = vtkActor::New();
   aSphere->SetMapper(map);
-  aSphere->GetProperty()->SetColor(0,0,1);
+  aSphere->GetProperty()->SetColor(1,1,1);
   aSphere->GetProperty()->SetOpacity(0.5);
-  //aSphere->GetProperty()->SetColor(0,0,1); // sphere color blue
 
   // a renderer and render window
   vtkRenderer *ren1 = vtkRenderer::New();
@@ -54,20 +52,45 @@ int main( int argc, char* argv[] )
 
   // create the video
   vtkFFMPEGRenderWindowRecorder *testRecorder = vtkFFMPEGRenderWindowRecorder::New();
-  testRecorder->SetRenderWindow(renWin);
+  testRecorder->SetRenderingWindow(renWin);
   testRecorder->SetFileName( argv[1] );
   testRecorder->StartCapture();
 
-  for (int i = 0; i < 100; i ++)
+  for (int i = 0; i < 30; i ++)
     {
     renWin->Render();
     testRecorder->TakeSnapshot();
     }
 
+  ren1->SetBackground(0,1,0);
+  for (int i = 0; i < 30; i ++)
+      {
+      renWin->Render();
+      testRecorder->TakeSnapshot();
+      }
+
+  ren1->SetBackground(0,0,1);
+  for (int i = 0; i < 30; i ++)
+        {
+        renWin->Render();
+        testRecorder->TakeSnapshot();
+        }
+
   testRecorder->EndCapture();
 
   // remove the video
-  //remove( "RecordingTest" );
+  //remove( argv[1] );
+
+  // Delete everything
+
+  sphere->Delete();
+  map->Delete();
+  aSphere->Delete();
+  ren1->Delete();
+  renWin->Delete();
+  iren->Delete();
+
+  testRecorder->Delete();
 
   return EXIT_SUCCESS;
 }

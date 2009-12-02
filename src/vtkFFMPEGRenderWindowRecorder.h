@@ -14,6 +14,7 @@ class vtkFFMPEGRenderWindowRecorder : public vtkObject
 {
    public:
      static vtkFFMPEGRenderWindowRecorder *New();
+     vtkTypeMacro(vtkFFMPEGRenderWindowRecorder,vtkObject);
 
      // set/get the quality of the video
      vtkSetMacro( m_VideoQuality, int );
@@ -26,7 +27,7 @@ class vtkFFMPEGRenderWindowRecorder : public vtkObject
      // set the name of the video (can be a path)
      void SetFileName( const std::string& );
      // set the render window to be observed
-     void SetRenderWindow( vtkRenderWindow* );
+     void SetRenderingWindow( vtkRenderWindow* );
      // start the video acquisition
      void StartCapture();
      // end the video acquisition
