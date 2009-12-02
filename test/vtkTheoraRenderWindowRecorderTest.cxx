@@ -8,7 +8,7 @@
 #include "vtkProperty.h"
 #include "vtksys/SystemTools.hxx"
 
-#include "vtkFFMPEGRenderWindowRecorder.h"
+#include "vtkTheoraRenderWindowRecorder.h"
 
 #include <stdio.h>
 
@@ -56,7 +56,7 @@ int main( int argc, char* argv[] )
   ren1->SetBackground(1,0,0); // Background color white
 
   // create the video
-  vtkFFMPEGRenderWindowRecorder *testRecorder = vtkFFMPEGRenderWindowRecorder::New();
+  vtkTheoraRenderWindowRecorder *testRecorder = vtkTheoraRenderWindowRecorder::New();
   testRecorder->SetRenderingWindow(renWin);
   testRecorder->SetFileName( argv[1] );
   testRecorder->StartCapture();
@@ -86,12 +86,12 @@ int main( int argc, char* argv[] )
   // Test
   exists = (int) vtksys::SystemTools::FileExists(argv[1]);
   length = vtksys::SystemTools::FileLength(argv[1]);
-  cout << "TestFFMPEGRecorder file exists: " << exists << endl;
-  cout << "TestFFMPEGRecorder file length: " << length << endl;
+  cout << "TestTheoraRecorder file exists: " << exists << endl;
+  cout << "TestTheoraRecorder file length: " << length << endl;
   if (!exists)
     {
     err = 1;
-    cerr << "ERROR: 1 - Test failing because TestFFMPEGRecorder file doesn't exist..." << endl;
+    cerr << "ERROR: 1 - Test failing because TestTheoraRecorder file doesn't exist..." << endl;
     }
   else
     {
@@ -100,7 +100,7 @@ int main( int argc, char* argv[] )
   if (0==length)
     {
     err = 2;
-    cerr << "ERROR: 2 - Test failing because TestFFMPEGRecorder file has zero length..." << endl;
+    cerr << "ERROR: 2 - Test failing because TestTheoraRecorder file has zero length..." << endl;
     }
 
   // Delete everything
