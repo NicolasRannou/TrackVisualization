@@ -8,9 +8,9 @@
 #include "vtkDebugLeaks.h"
 
 
-//-----------------------------------------------------------
-// constructor
-//
+/**
+ * \brief Constructor
+ */
 vtkFFMPEGRenderWindowRecorder::
 vtkFFMPEGRenderWindowRecorder() :
   m_FrameRate (30), m_VideoQuality (1),
@@ -20,9 +20,9 @@ vtkFFMPEGRenderWindowRecorder() :
 	m_ImageWriter  = vtkFFMPEGWriter::New();
 }
 
-//-----------------------------------------------------------
-// destructor
-//
+/**
+ * \brief Destructor
+ */
 vtkFFMPEGRenderWindowRecorder::
 ~vtkFFMPEGRenderWindowRecorder()
 {
@@ -36,9 +36,9 @@ vtkFFMPEGRenderWindowRecorder::
 		}
 }
 
-//-----------------------------------------------------------
-// create a new vtkObject from the constructor
-//
+/**
+ * \brief Constructor to create a vtkObject from the vtkObjectFactory
+ */
 vtkFFMPEGRenderWindowRecorder*
 vtkFFMPEGRenderWindowRecorder::
 New()
@@ -56,9 +56,10 @@ New()
 
 
 
-//-----------------------------------------------------------
-// set the name of the video (can be a path)
-//
+/**
+ * \brief Set the name of the video
+ * \param[in] iFileName Name of the video
+ */
 void
 vtkFFMPEGRenderWindowRecorder::
 SetFileName( const std::string& iFileName)
@@ -66,9 +67,10 @@ SetFileName( const std::string& iFileName)
 	m_FileName = iFileName;
 }
 
-//-----------------------------------------------------------
-// set the render window to be observed
-//
+/**
+ * \brief Set the rendering window to be observed
+ * \param[in] iRenderWindow Rendering Window to be observed
+ */
 void
 vtkFFMPEGRenderWindowRecorder::
 SetRenderingWindow( vtkRenderWindow* iRenderWindow)
@@ -79,9 +81,9 @@ SetRenderingWindow( vtkRenderWindow* iRenderWindow)
 	m_ImageWriter->SetInput(m_ImageFilter->GetOutput());
 }
 
-//-----------------------------------------------------------
-// start the video acquisition
-//
+/**
+ * \brief Start the video acquisition
+ */
 void
 vtkFFMPEGRenderWindowRecorder::
 StartCapture()
@@ -97,9 +99,9 @@ StartCapture()
 		}
 }
 
-//-----------------------------------------------------------
-// end the video acquisition
-//
+/**
+ * \brief End the video acquisition
+ */
 void
 vtkFFMPEGRenderWindowRecorder::
 EndCapture()
@@ -111,9 +113,9 @@ EndCapture()
 	  }
 }
 
-//-----------------------------------------------------------
-// take a snapshot of the current render window
-//
+/**
+ * \brief Take a snapshot of the current rendering window
+ */
 void
 vtkFFMPEGRenderWindowRecorder::
 TakeSnapshot()
