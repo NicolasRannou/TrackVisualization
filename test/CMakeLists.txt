@@ -15,7 +15,7 @@ SET( SimpleViewSrcs
 SET( vtkFFMPEGRenderWindowRecorderTestSources 
   vtkFFMPEGRenderWindowRecorderTest.cxx
   ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.cxx
-  )  
+  )
 
 #SET(vtkFFMPEGRenderWindowRecorderTestHeaders
 #  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.h
@@ -35,6 +35,42 @@ SET(SimpleViewHeaders
   ${SOURCE_DATA_PATH}/TrackWidget.h
   )
   
+# For the dialog recorder
+
+SET( DialogRecorderSrcs 
+  DialogRecorderTest.cxx 
+  ${SOURCE_DATA_PATH}/DialogRecorder.cxx
+  ${SOURCE_DATA_PATH}/vtkFFMPEGRenderWindowRecorder.cxx
+  )  
+  
+SET(DialogRecorderUI ${SOURCE_DATA_PATH}/DesignerDialogRecorder.ui)
+SET(DialogRecorderHeaders 
+  ${SOURCE_DATA_PATH}/DialogRecorder.h
+  ) 
+
+QT4_WRAP_UI(RecorderUISrcs ${DialogRecorderUI})
+QT4_WRAP_CPP(RecorderMOCSrcs ${DialogRecorderHeaders} )
+
+
+ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
+
+SET_SOURCE_FILES_PROPERTIES(${DialogRecorderSrcs} PROPERTIES
+                           OBJECT_DEPENDS "${RecorderUISrcs}")
+
+ADD_EXECUTABLE( DialogRecorderExe
+  MACOSX_BUNDLE 
+  ${DialogRecorderSrcs} ${RecorderUISrcs} ${RecorderMOCSrcs})
+  
+TARGET_LINK_LIBRARIES( DialogRecorderExe
+  QVTK
+  ${QT_LIBRARIES}  
+  vtkRendering
+  vtkGraphics
+  vtkIO
+  vtkCommon
+  vtkInfovis
+  vtkViews
+)
   # Set your files and resources here  
 #SET( DialogRecorder 
 #  DialogRecorderTest.cxx 
@@ -60,11 +96,9 @@ SOURCE_GROUP("Generated" FILES
   ${RCS_SOURCES}
 )
 
-ADD_DEFINITIONS(-DQT_GUI_LIBS -DQT_CORE_LIB -DQT3_SUPPORT)
 SET_SOURCE_FILES_PROPERTIES(${SimpleViewSrcs} PROPERTIES
                             OBJECT_DEPENDS "${UISrcs}")
                             
-
 # It's nice to have the ui in the windows project file...just double click on it
 # and designer comes up on that ui file :)
 IF (${CMAKE_BUILD_TOOL} MATCHES "msdev")

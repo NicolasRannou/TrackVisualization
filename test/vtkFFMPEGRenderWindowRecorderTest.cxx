@@ -95,7 +95,7 @@ int main( int argc, char* argv[] )
     }
   else
     {
-    //vtksys::SystemTools::RemoveFile(argv[1]);
+    vtksys::SystemTools::RemoveFile(argv[1]);
     }
   if (0==length)
     {
