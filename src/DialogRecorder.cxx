@@ -16,11 +16,11 @@
  */
 
 DialogRecorder::
-DialogRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ),
-  m_XMax( 100 ), m_YMin(0), m_YMax( 100 ), m_ZMin( 0 ), m_ZMax( 100 ),
-  m_TMin( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
-  m_RecordZ( 0 ), m_RecordT( 0 ), m_VideoName( "" ),
-  m_FrameRate( 30 ), m_VideoQuality ( 1 )
+DialogRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ), m_XFixed( 0 ),
+  m_XMax( 100 ), m_YMin(0), m_YFixed( 0 ), m_YMax( 100 ), m_ZMin( 0 ), m_ZFixed( 0 ), m_ZMax( 100 ),
+  m_TMin( 0 ), m_TFixed( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
+  m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ), m_VideoName( "" ),
+  m_FrameRate( 30 ), m_VideoQuality ( 1 ), m_WindowSelected(0)
 {
 	this->setupUi(this);
 
@@ -47,6 +47,10 @@ DialogRecorder::
 //                                                   //
 //---------------------------------------------------//
 
+///////////////////////////////////////////////////////
+//               CREATE VIDEO TAB
+///////////////////////////////////////////////////////
+
 /**
  * \brief Set the minimum value for the X spin box
  * \param[in] iValue Value of the X spin box
@@ -56,6 +60,7 @@ DialogRecorder::
 setXSpinMin(unsigned int iValue)
 {
 	this->xSpinMin->setMinimum(iValue);
+	this->xSpinFixed->setMinimum(iValue);
 	this->xSpinMax->setMinimum(iValue+1);
 }
 
@@ -67,8 +72,9 @@ void
 DialogRecorder::
 setXSpinMax(unsigned int iValue)
 {
-	this->xSpinMin->setMinimum(iValue-1);
-	this->xSpinMax->setMinimum(iValue);
+	this->xSpinMin->setMaximum(iValue-1);
+	this->xSpinFixed->setMaximum(iValue);
+	this->xSpinMax->setMaximum(iValue);
 }
 
 /**
@@ -80,6 +86,7 @@ DialogRecorder::
 setYSpinMin(unsigned int iValue)
 {
 	this->ySpinMin->setMinimum(iValue);
+	this->ySpinFixed->setMinimum(iValue);
 	this->ySpinMax->setMinimum(iValue+1);
 }
 
@@ -91,8 +98,9 @@ void
 DialogRecorder::
 setYSpinMax(unsigned int iValue)
 {
-	this->ySpinMin->setMinimum(iValue-1);
-	this->ySpinMax->setMinimum(iValue);
+	this->ySpinMin->setMaximum(iValue-1);
+	this->ySpinFixed->setMaximum(iValue);
+	this->ySpinMax->setMaximum(iValue);
 }
 
 /**
@@ -104,6 +112,7 @@ DialogRecorder::
 setZSpinMin(unsigned int iValue)
 {
 	this->zSpinMin->setMinimum(iValue);
+	this->zSpinFixed->setMinimum(iValue);
 	this->zSpinMax->setMinimum(iValue+1);
 }
 
@@ -115,8 +124,9 @@ void
 DialogRecorder::
 setZSpinMax(unsigned int iValue)
 {
-	this->zSpinMin->setMinimum(iValue-1);
-	this->zSpinMax->setMinimum(iValue);
+	this->zSpinMin->setMaximum(iValue-1);
+	this->zSpinFixed->setMaximum(iValue);
+	this->zSpinMax->setMaximum(iValue);
 }
 
 /**
@@ -128,6 +138,7 @@ DialogRecorder::
 setTSpinMin(unsigned int iValue)
 {
 	this->tSpinMin->setMinimum(iValue);
+	this->tSpinFixed->setMinimum(iValue);
 	this->tSpinMax->setMinimum(iValue+1);
 }
 
@@ -139,8 +150,9 @@ void
 DialogRecorder::
 setTSpinMax(unsigned int iValue)
 {
-	this->tSpinMin->setMinimum(iValue-1);
-	this->tSpinMax->setMinimum(iValue);
+	this->tSpinMin->setMaximum(iValue-1);
+	this->tSpinFixed->setMaximum(iValue);
+	this->tSpinMax->setMaximum(iValue);
 }
 
 /**
@@ -159,6 +171,10 @@ SetRenderingWindow( vtkRenderWindow* iRenderingWindow )
 //                    SIGNALS                        //
 //                                                   //
 //---------------------------------------------------//
+
+///////////////////////////////////////////////////////
+//               CREATE VIDEO TAB
+///////////////////////////////////////////////////////
 
 /**
  * \brief Function called when checkbox state changes
@@ -195,9 +211,29 @@ on_zSliceCheckBox_stateChanged( int state )
  */
 void
 DialogRecorder::
-on_tSliceCheckBox_stateChanged( int state )
+on_xtSliceCheckBox_stateChanged( int state )
 {
-	m_RecordT = state;
+	m_RecordTX = state;
+}
+
+/**
+ * \brief Function called when checkbox state changes
+ */
+void
+DialogRecorder::
+on_ytSliceCheckBox_stateChanged( int state )
+{
+	m_RecordTY = state;
+}
+
+/**
+ * \brief Function called when checkbox state changes
+ */
+void
+DialogRecorder::
+on_ztSliceCheckBox_stateChanged( int state )
+{
+	m_RecordTZ = state;
 }
 
 /**
@@ -279,6 +315,46 @@ on_tSpinMax_valueChanged( int value )
 }
 
 /**
+ * \brief Function called when slice changes
+ */
+void
+DialogRecorder::
+on_xSpinFixed_valueChanged( int value )
+{
+	m_XFixed = value;
+}
+
+/**
+ * \brief Function called when slice changes
+ */
+void
+DialogRecorder::
+on_ySpinFixed_valueChanged( int value )
+{
+	m_YFixed = value;
+}
+
+/**
+ * \brief Function called when slice changes
+ */
+void
+DialogRecorder::
+on_zSpinFixed_valueChanged( int value )
+{
+	m_ZFixed = value;
+}
+
+/**
+ * \brief Function called when slice changes
+ */
+void
+DialogRecorder::
+on_tSpinFixed_valueChanged( int value )
+{
+	m_TFixed = value;
+}
+
+/**
  * \brief Get and print the location to store MegaCapture file
  */
 void
@@ -322,17 +398,23 @@ on_startVideo_clicked()
 {
   // Print parameters for testings
 	std::cout<<"m_XMin: "<< m_XMin <<std::endl;
+	std::cout<<"m_XFixed: "<< m_XFixed <<std::endl;
 	std::cout<<"m_XMax: "<< m_XMax <<std::endl;
 	std::cout<<"m_YMin: "<< m_YMin <<std::endl;
+	std::cout<<"m_YFixed: "<< m_YFixed <<std::endl;
 	std::cout<<"m_YMax: "<< m_YMax <<std::endl;
 	std::cout<<"m_ZMin: "<< m_ZMin <<std::endl;
+	std::cout<<"m_ZFixed: "<< m_ZFixed <<std::endl;
 	std::cout<<"m_ZMax: "<< m_ZMax <<std::endl;
 	std::cout<<"m_TMin: "<< m_TMin <<std::endl;
+	std::cout<<"m_TFixed: "<< m_TFixed <<std::endl;
 	std::cout<<"m_TMax: "<< m_TMax <<std::endl;
 	std::cout<<"m_RecordX: "<< m_RecordX <<std::endl;
 	std::cout<<"m_RecordY: "<< m_RecordY <<std::endl;
 	std::cout<<"m_RecordZ: "<< m_RecordZ <<std::endl;
-	std::cout<<"m_RecordT: "<< m_RecordT <<std::endl;
+	std::cout<<"m_RecordTX: "<< m_RecordTX <<std::endl;
+	std::cout<<"m_RecordTY: "<< m_RecordTY <<std::endl;
+	std::cout<<"m_RecordTZ: "<< m_RecordTZ <<std::endl;
 	std::cout<<"m_FrameRate: "<< m_FrameRate <<std::endl;
 	std::cout<<"m_VideoQuality: "<< m_VideoQuality <<std::endl;
 
@@ -370,7 +452,7 @@ on_startVideo_clicked()
 	  m_VideoRecorder->EndCapture();
   	}
 
-	// for X Slices
+	// for Y Slices
   if(m_RecordY>0)
   	{
     QString fileName = m_VideoName;
@@ -399,7 +481,7 @@ on_startVideo_clicked()
 	  m_VideoRecorder->EndCapture();
   	}
 
-	// for X Slices
+	// for Z Slices
   if(m_RecordZ>0)
   	{
     QString fileName = m_VideoName;
@@ -427,33 +509,156 @@ on_startVideo_clicked()
     //...
 	  m_VideoRecorder->EndCapture();
   	}
+}
 
-	// for X Slices
-  if(m_RecordT>0)
-  	{
-    QString fileName = m_VideoName;
+///////////////////////////////////////////////////////
+//               RECORD VIDEO TAB
+///////////////////////////////////////////////////////
 
-    fileName.insert( fileName.size(), QString("-T-"));
-    fileName.insert( fileName.size(), QString::number( m_TMin, 10 ) );
-    fileName.insert( fileName.size(), QString("-"));
-    fileName.insert( fileName.size(), QString::number( m_TMax, 10 ) );
-    fileName.insert( fileName.size(), QString(".avi"));
+/**
+ * \brief Function called when a recording window selected
+ */
 
-    m_VideoRecorder->SetFileName( fileName.toStdString() );
-    std::cout<<"FileName T: "<< fileName.toStdString() << std::endl;
+void
+DialogRecorder::
+on_upperLeft_clicked()
+{
+	if(m_WindowSelected != 1)
+		{
+    m_WindowSelected = 1;
 
-	  m_VideoRecorder->StartCapture();
-    //...
-	  for(unsigned int i = m_TMin; i < m_TMax+1; i++)
-	  	{
-	    //send signal to gofigure
+    this->upperLeft->setStyleSheet("background-color: white;"
+    		"font: 36pt;"
+    		"color: black;");
+    this->upperRight->setStyleSheet("background-color: black;"
+        		"font: 36pt;"
+        		"color: white;");
+    this->lowerLeft->setStyleSheet("background-color: black;"
+            		"font: 36pt;"
+            		"color: white;");
+    this->lowerRight->setStyleSheet("background-color: black;"
+            		"font: 36pt;"
+            		"color: white;");
+		}
+	else
+		{
+	  m_WindowSelected = 0;
 
-	    //...
+	  this->upperLeft->setStyleSheet("background-color: black;"
+	  		    "font: 36pt;"
+	      		"color: white;");
+	  this->upperRight->setStyleSheet("background-color: white;"
+	       		"font: 36pt;"
+	        	"color: black;");
+	  this->lowerLeft->setStyleSheet("background-color: white;"
+	        	"font: 36pt;"
+	        	"color: black;");
+	  this->lowerRight->setStyleSheet("background-color: white;"
+	        	"font: 36pt;"
+	        	"color: black;");
+		}
+}
 
-	    //capture screen
-	    m_VideoRecorder->TakeSnapshot();
-	  	}
-    //...
-	  m_VideoRecorder->EndCapture();
-  	}
+/**
+ * \brief Function called when a recording window selected
+ */
+
+void
+DialogRecorder::
+on_upperRight_clicked()
+{
+	if(m_WindowSelected != 2)
+		{
+    m_WindowSelected = 2;
+
+    this->upperRight->setStyleSheet("background-color: white;"
+         		"font: 36pt;"
+         		"color: black;");
+    this->upperLeft->setStyleSheet("background-color: black;"
+        		"font: 36pt;"
+        		"color: white;");
+    this->lowerLeft->setStyleSheet("background-color: black;"
+         		"font: 36pt;"
+         		"color: white;");
+    this->lowerRight->setStyleSheet("background-color: black;"
+         		"font: 36pt;"
+         		"color: white;");
+		}
+	else
+		{
+	  m_WindowSelected = 0;
+	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
+	  	  		    "font: 36pt;"
+	  	      		"color: rgb(255, 255, 255);");
+		}
+}
+
+/**
+ * \brief Function called when a recording window selected
+ */
+
+void
+DialogRecorder::
+on_lowerLeft_clicked()
+{
+	if(m_WindowSelected != 3)
+		{
+    m_WindowSelected = 3;
+
+
+    this->lowerLeft->setStyleSheet("background-color: white;"
+        		"font: 36pt;"
+        		"color: black;");
+    this->upperRight->setStyleSheet("background-color: black;"
+         		"font: 36pt;"
+         		"color: white;");
+    this->upperLeft->setStyleSheet("background-color: black;"
+         		"font: 36pt;"
+         		"color: white;");
+    this->lowerRight->setStyleSheet("background-color: black;"
+         		"font: 36pt;"
+         		"color: white;");
+		}
+	else
+		{
+	  m_WindowSelected = 0;
+	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
+	  	  		    "font: 36pt;"
+	  	      		"color: rgb(255, 255, 255);");
+		}
+}
+
+/**
+ * \brief Function called when a recording window selected
+ */
+
+void
+DialogRecorder::
+on_lowerRight_clicked()
+{
+	if(m_WindowSelected != 4)
+		{
+    m_WindowSelected = 4;
+
+
+    this->lowerRight->setStyleSheet("background-color: white;"
+        		"font: 36pt;"
+        		"color: black;");
+    this->upperRight->setStyleSheet("background-color: black;"
+        		"font: 36pt;"
+        		"color: white;");
+    this->lowerLeft->setStyleSheet("background-color: black;"
+        		"font: 36pt;"
+        		"color: white;");
+    this->upperLeft->setStyleSheet("background-color: black;"
+        		"font: 36pt;"
+        		"color: white;");
+		}
+	else
+		{
+	  m_WindowSelected = 0;
+	  this->upperLeft->setStyleSheet("background-color: rgb(0, 0, 0);"
+	  	  		    "font: 36pt;"
+	  	      		"color: rgb(255, 255, 255);");
+		}
 }
