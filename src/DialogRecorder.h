@@ -6,6 +6,8 @@
 
 #include "vtkFFMPEGRenderWindowRecorder.h"
 
+#include <QProgressDialog>
+
 #include <iostream>
 #include <string>
 
@@ -51,6 +53,8 @@ class DialogRecorder : public QDialog, private Ui::DialogVideoRecorder
         unsigned int m_VideoQuality;
 
         vtkFFMPEGRenderWindowRecorder *m_VideoRecorder;
+
+        QProgressDialog* m_ProgressDialog;
 
     private slots:
         //Create video pushbutton

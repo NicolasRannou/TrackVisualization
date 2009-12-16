@@ -24,7 +24,10 @@ DialogRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ),
 {
 	this->setupUi(this);
 
-	m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
+	m_ProgressDialog = new QProgressDialog("Conversion in progress.", "Cancel", 0, 100, this);
+	//QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
+
+  m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
 }
 
 /**
@@ -335,6 +338,7 @@ on_startVideo_clicked()
 
 	//Create a QTDialogProgress
 
+  unsigned int m_SizeProgressBar;
 	//...
 
 	// for X Slices
@@ -353,7 +357,7 @@ on_startVideo_clicked()
 
 	  m_VideoRecorder->StartCapture();
     //...
-	  for(int i = m_XMin; i < m_XMax+1; i++)
+	  for(unsigned int i = m_XMin; i < m_XMax+1; i++)
 	  	{
 	    //send signal to gofigure
 
@@ -366,4 +370,90 @@ on_startVideo_clicked()
 	  m_VideoRecorder->EndCapture();
   	}
 
+	// for X Slices
+  if(m_RecordY>0)
+  	{
+    QString fileName = m_VideoName;
+
+    fileName.insert( fileName.size(), QString("-Y-"));
+    fileName.insert( fileName.size(), QString::number( m_YMin, 10 ) );
+    fileName.insert( fileName.size(), QString("-"));
+    fileName.insert( fileName.size(), QString::number( m_YMax, 10 ) );
+    fileName.insert( fileName.size(), QString(".avi"));
+
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
+    std::cout<<"FileName Y: "<< fileName.toStdString() << std::endl;
+
+	  m_VideoRecorder->StartCapture();
+    //...
+	  for(unsigned int i = m_YMin; i < m_YMax+1; i++)
+	  	{
+	    //send signal to gofigure
+
+	    //...
+
+	    //capture screen
+	    m_VideoRecorder->TakeSnapshot();
+	  	}
+    //...
+	  m_VideoRecorder->EndCapture();
+  	}
+
+	// for X Slices
+  if(m_RecordZ>0)
+  	{
+    QString fileName = m_VideoName;
+
+    fileName.insert( fileName.size(), QString("-z-"));
+    fileName.insert( fileName.size(), QString::number( m_ZMin, 10 ) );
+    fileName.insert( fileName.size(), QString("-"));
+    fileName.insert( fileName.size(), QString::number( m_ZMax, 10 ) );
+    fileName.insert( fileName.size(), QString(".avi"));
+
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
+    std::cout<<"FileName Z: "<< fileName.toStdString() << std::endl;
+
+	  m_VideoRecorder->StartCapture();
+    //...
+	  for(unsigned int i = m_ZMin; i < m_ZMax+1; i++)
+	  	{
+	    //send signal to gofigure
+
+	    //...
+
+	    //capture screen
+	    m_VideoRecorder->TakeSnapshot();
+	  	}
+    //...
+	  m_VideoRecorder->EndCapture();
+  	}
+
+	// for X Slices
+  if(m_RecordT>0)
+  	{
+    QString fileName = m_VideoName;
+
+    fileName.insert( fileName.size(), QString("-T-"));
+    fileName.insert( fileName.size(), QString::number( m_TMin, 10 ) );
+    fileName.insert( fileName.size(), QString("-"));
+    fileName.insert( fileName.size(), QString::number( m_TMax, 10 ) );
+    fileName.insert( fileName.size(), QString(".avi"));
+
+    m_VideoRecorder->SetFileName( fileName.toStdString() );
+    std::cout<<"FileName T: "<< fileName.toStdString() << std::endl;
+
+	  m_VideoRecorder->StartCapture();
+    //...
+	  for(unsigned int i = m_TMin; i < m_TMax+1; i++)
+	  	{
+	    //send signal to gofigure
+
+	    //...
+
+	    //capture screen
+	    m_VideoRecorder->TakeSnapshot();
+	  	}
+    //...
+	  m_VideoRecorder->EndCapture();
+  	}
 }
