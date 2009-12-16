@@ -20,7 +20,8 @@ DialogRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ), m_XFixed( 0 
   m_XMax( 100 ), m_YMin(0), m_YFixed( 0 ), m_YMax( 100 ), m_ZMin( 0 ), m_ZFixed( 0 ), m_ZMax( 100 ),
   m_TMin( 0 ), m_TFixed( 0 ), m_TMax( 100 ), m_RecordX( 0 ), m_RecordY( 0 ),
   m_RecordZ( 0 ), m_RecordTX( 0 ), m_RecordTY( 0 ), m_RecordTZ( 0 ), m_VideoName( "" ),
-  m_FrameRate( 30 ), m_VideoQuality ( 1 ), m_WindowSelected(0)
+  m_FrameRate( 30 ), m_VideoQuality ( 1 ), m_WindowSelected(0), m_VideoName2( "" ),
+  m_FrameRate2( 30 ), m_VideoQuality2 ( 1 ), m_FrameCounter( 0 )
 {
 	this->setupUi(this);
 
@@ -28,6 +29,14 @@ DialogRecorder(QWidget *iParent) : QDialog( iParent ), m_XMin( 0 ), m_XFixed( 0 
 	//QObject::connect(m_ProgressDialog, SIGNAL(canceled()), this, SLOT(CanceledReceived()));
 
   m_VideoRecorder = vtkFFMPEGRenderWindowRecorder::New();
+  m_VideoRecorder2 = vtkFFMPEGRenderWindowRecorder::New();
+
+  m_InternalTimer = new QTimer( this );
+  QObject::connect( m_InternalTimer, SIGNAL(timeout()),this, SLOT(timeout()) );
+
+  //Initalize chrono with .00 (not 0)
+  QString value = "0.00";
+  this->videoLenght->display(value);
 }
 
 /**
@@ -38,6 +47,7 @@ DialogRecorder::
 {
 
 	m_VideoRecorder->Delete();
+	m_VideoRecorder2->Delete();
 
 }
 
@@ -418,6 +428,11 @@ on_startVideo_clicked()
 	std::cout<<"m_FrameRate: "<< m_FrameRate <<std::endl;
 	std::cout<<"m_VideoQuality: "<< m_VideoQuality <<std::endl;
 
+	//Set good rendering window from gofigure
+	//vtkRenderWindow* renderingWindow;
+  //...
+	//m_VideoRecorder->SetRenderingWindow(renderingWindow);
+
 	//Create a QTDialogProgress
 
   unsigned int m_SizeProgressBar;
@@ -661,4 +676,111 @@ on_lowerRight_clicked()
 	  	  		    "font: 36pt;"
 	  	      		"color: rgb(255, 255, 255);");
 		}
+}
+
+/**
+ * \brief Get and print the location to store MegaCapture file
+ */
+void
+DialogRecorder::
+on_createFile_2_clicked()
+{
+	m_VideoName2 = QFileDialog::getSaveFileName( this,
+	      tr( "Folder to Save Video" ), "fileName", 0 );
+
+	this->videoName_2->setText( m_VideoName2 );
+}
+
+void
+DialogRecorder::
+on_frameRate_2_valueChanged( int value )
+{
+	m_FrameRate2 = value;
+}
+
+/**
+ * \brief Function called when VideoQuality changes
+ */
+void
+DialogRecorder::
+on_videoQuality_2_valueChanged( int value )
+{
+	m_VideoQuality2 = value;
+}
+
+/**
+ * \brief Function called when "start recording" clicked
+ */
+void
+DialogRecorder::
+on_startRecord_clicked()
+{
+
+  // Print parameters for testings
+	std::cout<<"m_VideoName2: "<< m_VideoName2.toStdString() <<std::endl;
+	std::cout<<"m_FrameRate2: "<< m_FrameRate2 <<std::endl;
+	std::cout<<"m_VideoQuality2: "<< m_VideoQuality2 <<std::endl;
+	std::cout<<"m_WindowSelected: "<< m_WindowSelected <<std::endl;
+
+	// Get the good rendering window fron  gofigure, according to m_WindowSelected
+	//vtkRenderWindow* renderingWindow;
+	//...
+	//m_VideoRecorder2->SetRenderingWindow(renderingWindow);
+
+	QString fileName = m_VideoName2;
+
+	fileName.insert( fileName.size(), QString(".avi"));
+
+	//m_VideoRecorder2->SetFileName( fileName.toStdString() );
+	std::cout<<"FileName : "<< fileName.toStdString() << std::endl;
+
+	//m_VideoRecorder2->StartCapture();
+	m_InternalTimer->start( 1000/m_FrameRate2 );
+}
+
+/**
+ * \brief Function called when "end recording" clicked
+ */
+void
+DialogRecorder::
+on_endRecord_clicked()
+{
+  //m_VideoRecorder2->EndCapture();
+  m_InternalTimer->stop();
+  m_FrameCounter = 0;
+}
+
+void
+DialogRecorder::
+timeout()
+{
+	//m_VideoRecorder2->TakeSnapshot();
+
+  ++m_FrameCounter;
+
+  // for a better visualisation, always show 2 decimal
+  double doubleCounter;
+  doubleCounter = (double)m_FrameCounter/(double)m_FrameRate2;
+  std::cout<< "doubleCounter: "<< doubleCounter << std::endl;
+
+  int test = 100*doubleCounter;
+  std::cout<< "test: "<< test << std::endl;
+  QString value = QString::number( test, 10 );
+
+  if ( test >= 10 )
+  	{
+    value.insert( value.size()-2, QString("."));
+  	}
+  else
+  	{
+    value.insert( value.size()-1, QString(".0"));
+  	}
+
+  if(test<100)
+  	{
+    value.insert( value.size()-3, QString("0"));
+  	}
+
+  std::cout<< "value: "<< value.toStdString() << std::endl;
+  this->videoLenght->display(value);
 }

@@ -66,6 +66,17 @@ class DialogRecorder : public QDialog, private Ui::DialogVideoRecorder
     // in tab "record video"
         unsigned int m_WindowSelected;
 
+        QString m_VideoName2;
+
+        unsigned int m_FrameRate2;
+        unsigned int m_VideoQuality2;
+
+        vtkFFMPEGRenderWindowRecorder *m_VideoRecorder2;
+
+        QTimer *m_InternalTimer;
+        unsigned int m_FrameCounter;
+
+
     private slots:
 
     // in tab "create video"
@@ -109,6 +120,16 @@ class DialogRecorder : public QDialog, private Ui::DialogVideoRecorder
         void on_upperRight_clicked();
         void on_lowerLeft_clicked();
         void on_lowerRight_clicked();
+
+        //Video parameters
+        void on_createFile_2_clicked();
+        void on_frameRate_2_valueChanged(int value);
+        void on_videoQuality_2_valueChanged(int value);
+
+        void on_startRecord_clicked();
+        void on_endRecord_clicked();
+
+        void timeout();
 
 
 };
