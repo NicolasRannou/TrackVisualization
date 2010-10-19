@@ -6,41 +6,20 @@
 #include "vtkPolyData.h"
 #include "vtkRenderer.h"
 
-#include "vtkFFMPEGRenderWindowRecorder.h"
 #include "TrackVisualization.h"
-
-#ifdef   USEFFMPEG
- #include "vtkFFMPEGWriter.h"
-#endif
 
 TrackWidget::
 TrackWidget(QWidget *parent) :
   QWidget(parent), m_TrackShape( false ),   m_Begin( 0 ), m_End( 0 ),
   m_TotalTimeRange( 0 ), m_GlyphTime( 0 ), m_Shape( 0 ),
-  m_FullFileName( "video_name" ), m_FileName( "video_name" ),
-  m_VideoQuality( 1 ), m_FrameRate( 30 ), m_FrameCounter( 0 ),
   m_AutoResetCamera( true )
 {
   this->setupUi(this);
-  m_InternalTimer = new QTimer( this );
-  m_W2if = vtkWindowToImageFilter::New();
-
-#ifdef   USEFFMPEG
-  m_FFMPEGWriter = vtkFFMPEGWriter::New();
-  m_FFMPEGRecorder = vtkFFMPEGRenderWindowRecorder::New();
-  QObject::connect( m_InternalTimer, SIGNAL(timeout()),
-    this, SLOT(timeout()) );
-#endif
 }
 
 TrackWidget::
 ~TrackWidget()
 {
-#ifdef   USEFFMPEG
-  m_FFMPEGWriter->Delete();
-  m_FFMPEGRecorder->Delete();
-#endif
-  m_W2if->Delete();
 }
 
 void
@@ -98,75 +77,6 @@ on_glyphShape_activated ( int index )
   updateRenderingWindow();
 }
 
-#ifdef   USEFFMPEG
-void
-TrackWidget::
-on_startVideo_clicked()
-{
-  m_W2if->SetInput(this->visualizationBox->GetRenderWindow());
-
-  m_FileName = this->videoName->text().toStdString();
-
-  m_FFMPEGWriter->SetFileName(m_FullFileName.c_str());
-  m_FFMPEGWriter->SetQuality(m_VideoQuality);
-  m_FFMPEGWriter->SetRate(m_FrameRate);
-
-  m_FFMPEGRecorder->SetFileName("GOFIGURE");
-  m_FFMPEGRecorder->Setm_VideoQuality(1);
-  m_FFMPEGRecorder->Setm_FrameRate(30);
-
-  m_FFMPEGRecorder->SetRenderingWindow(this->visualizationBox->GetRenderWindow());
-  m_FFMPEGRecorder->StartCapture();
-
-
-  m_FFMPEGWriter->SetInput(m_W2if->GetOutput());
-  m_FFMPEGWriter->Start();
-
-  this->endVideo->setEnabled(true);
-
-  startVideo->setEnabled(false);
-  videoName->setEnabled(false);
-  frameRate->setEnabled(false);
-  videoQuality->setEnabled(false);
-
-  m_InternalTimer->start( 1000/m_FrameRate );
-}
-
-void
-TrackWidget::
-on_endVideo_clicked()
-{
-  m_FFMPEGWriter->End();
-
-  m_FFMPEGRecorder->EndCapture();
-
-  this->endVideo->setEnabled(false);
-
-  this->startVideo->setEnabled(true);
-  this->videoName->setEnabled(true);
-  this->frameRate->setEnabled(true);
-  this->videoQuality->setEnabled(true);
-
-  m_InternalTimer->stop();
-  m_FrameCounter = 0;
-}
-
-void
-TrackWidget::
-timeout()
-{
-  m_W2if->Modified();
-  m_FFMPEGWriter->Write();
-
-  m_FFMPEGRecorder->TakeSnapshot();
-
-  ++m_FrameCounter;
-  double doubleCounter;
-  doubleCounter = (double)m_FrameCounter/(double)m_FrameRate;
-  videoLength->setValue(doubleCounter);
-}
-#endif
-
 void
 TrackWidget::
 on_begin_valueChanged(int value)
@@ -176,7 +86,7 @@ on_begin_valueChanged(int value)
     if( value < m_Begin )
       {
       m_Begin = value;
-      this->glyphTimeSlider->setMinValue(value);
+      this->glyphTimeSlider->setMinimum(value);
       updateRenderingWindow();
       }
     else
@@ -184,7 +94,7 @@ on_begin_valueChanged(int value)
       if( value <= m_End )
         {
         m_Begin = value;
-        this->glyphTimeSlider->setMinValue(value);
+        this->glyphTimeSlider->setMinimum(value);
         updateRenderingWindow();
         }
       else
@@ -204,7 +114,7 @@ on_end_valueChanged(int value)
     if( value > m_End )
       {
       m_End = value;
-      this->glyphTimeSlider->setMaxValue(value);
+      this->glyphTimeSlider->setMaximum(value);
       updateRenderingWindow();
       }
     else
@@ -213,7 +123,7 @@ on_end_valueChanged(int value)
         {
         m_End = value;
         updateRenderingWindow();
-        this->glyphTimeSlider->setMaxValue(value);
+        this->glyphTimeSlider->setMaximum(value);
         }
       else
         {
@@ -223,7 +133,7 @@ on_end_valueChanged(int value)
     }
   else
     {
-    this->glyphTimeSlider->setMaxValue(value);
+    this->glyphTimeSlider->setMaximum(value);
     }
 }
 
@@ -279,20 +189,6 @@ on_glyphTimeSlider_valueChanged(int value)
       glyphTime->setValue(m_End);
       }
     }
-}
-
-void
-TrackWidget::
-on_videoQuality_valueChanged(int value)
-{
-  m_VideoQuality = value;
-}
-
-void
-TrackWidget::
-on_frameRate_valueChanged(int value)
-{
-  m_FrameRate = value;
 }
 
 void
@@ -360,14 +256,4 @@ ConfigureWidget()
   visualizationBox->update();
 
   delete trackTimeRange;
-}
-
-void
-TrackWidget::
-on_createFile_clicked( )
-{
-  QString filename =
-    QFileDialog::getSaveFileName( this,
-      tr( "Folder to Save Video" ), videoName->text(), 0 );
-  m_FullFileName = filename.toStdString();
 }
